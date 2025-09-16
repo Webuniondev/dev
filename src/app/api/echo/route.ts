@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       );
     }
     return NextResponse.json({ echo: parsed.data.message }, { status: 200 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Bad Request" }, { status: 400 });
   }
 }

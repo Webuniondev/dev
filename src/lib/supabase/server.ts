@@ -1,6 +1,6 @@
-import 'server-only'
-import { cookies } from "next/headers";
+import "server-only";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
 export const supabaseServer = async () => {
   const cookieStore = await cookies();

@@ -10,7 +10,7 @@ try {
   if (sentryDsn) {
     sentryOrigin = new URL(sentryDsn).origin;
   }
-} catch (_) {}
+} catch {}
 
 const DIRECTIVES_DEV = {
   "base-uri": ["self"],
