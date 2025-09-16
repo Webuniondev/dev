@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Ourspace Web – Stack & Guide
 
-## Getting Started
+Next.js App Router + TypeScript + Tailwind v4 + shadcn/ui + Radix + React Query + Zod + Sentry.
 
-First, run the development server:
+### Démarrer
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Ce qui est déjà en place
+- Tailwind v4 (via `@tailwindcss/postcss`), `src/app/globals.css` avec container util.
+- shadcn/ui + Radix, composants de base dans `src/components/ui/*`.
+- CSP via middleware (`src/middleware.ts`) avec mode dev permissif et prod strict; domaine Sentry autorisé.
+- Sentry côté client/serveur/edge (`sentry.*.config.ts`) + tunnel `/api/monitoring`.
+- React Query provider (`src/app/providers.tsx`) monté dans `app/layout.tsx`.
+- Zod installé + exemples de schémas (`src/lib/validation/user.ts`).
+- Exemple d’API validée `POST /api/echo` avec Zod.
+- ESLint + Prettier + tri d’imports, scripts `npm run lint` et `npm run format`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Variables d’environnement (.env.local)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+# Sentry
+SENTRY_DSN=...
+NEXT_PUBLIC_SENTRY_DSN=...
+SENTRY_RELEASE=prod
+SENTRY_ENV=production
+NEXT_PUBLIC_SENTRY_RELEASE=prod
+NEXT_PUBLIC_SENTRY_ENV=production
 
-## Learn More
+# Supabase (à compléter)
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE=
 
-To learn more about Next.js, take a look at the following resources:
+# Stripe (à compléter)
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Règles & Sécurité
+- Données sensibles uniquement côté serveur (Route Handlers/Server Actions).
+- Valider toutes les entrées/sorties avec Zod.
+- CSP stricte en prod; ajuster si des domaines externes sont requis.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### À faire (extrait de `doc.txt`)
+- Configurer Supabase SDK (client/server) et documenter RLS/policies.
+- Définir RLS et policies minimales.
+- Configurer Stripe SDK, Customer Portal et webhooks (signature vérifiée).
+- Mettre un store Zustand d’exemple.
+- Optimiser les images avec `next/image` (WebP/AVIF, tailles).
+- Ajouter pages d’erreur/fallbacks (`app/error.tsx`, `app/not-found.tsx`) + Suspense.
+- Ajouter la base de tests (Jest/RTL/MSW).
+- Ajouter CI basique (lint + test) et `@next/bundle-analyzer`.
+- Préparer `.env.local.example` et tenir `README/status.md` à jour.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Liens utiles
+- Next.js docs: https://nextjs.org/docs
+- shadcn/ui: https://ui.shadcn.com
+- Sentry Next.js: https://docs.sentry.io/platforms/javascript/guides/nextjs/
