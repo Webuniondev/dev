@@ -18,6 +18,7 @@ npm run dev
 - React Query provider (`src/app/providers.tsx`) monté dans `app/layout.tsx`.
 - Zod installé + exemples de schémas (`src/lib/validation/user.ts`).
 - Exemple d’API validée `POST /api/echo` avec Zod.
+- Supabase SDK configuré: `src/lib/supabase/{client,server,admin}.ts`.
 - ESLint + Prettier + tri d’imports, scripts `npm run lint` et `npm run format`.
 
 ### Variables d’environnement (.env.local)
@@ -32,9 +33,9 @@ NEXT_PUBLIC_SENTRY_RELEASE=prod
 NEXT_PUBLIC_SENTRY_ENV=production
 
 # Supabase (à compléter)
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE=
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE=...
 
 # Stripe (à compléter)
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
