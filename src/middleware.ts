@@ -1,5 +1,5 @@
-import { chainMatch, isPageRequest, csp } from "@next-safe/middleware";
 import type { CspDirectives } from "@next-safe/middleware";
+import { chainMatch, csp,isPageRequest } from "@next-safe/middleware";
 
 const isDev = process.env.NODE_ENV !== "production";
 
