@@ -45,6 +45,15 @@ Coding Standards:
 - Include try-catch and fallback UI for errors.
 - Use React.memo and analyze bundle size.
 
+Import/Export Organization:
+- Follow strict import sorting with eslint-plugin-simple-import-sort:
+  1. External library imports (alphabetical order)
+  2. Empty line separator
+  3. Internal imports with @/ or ./ (alphabetical order)
+- Type imports should use `import type` syntax when possible
+- Sort exports alphabetically within export statements
+- Use eslint --fix to automatically apply correct import/export order
+
 Feedback: Adapt suggestions based on user feedback, tracked in status.md or code comments. Address recurring issues with simpler or alternative solutions. Clarify ambiguous feedback via @ references.Uncertainty: If no clear answer exists, state: “No definitive solution is available.” If unknown, say: “I lack sufficient information. Please provide details (e.g., @app/page.tsx).” Suggest next steps (e.g., consult Next.js docs).
 
 
