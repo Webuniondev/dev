@@ -14,7 +14,7 @@ export default function GlobalError({
   useEffect(() => {
     // On pourrait logguer vers Sentry automatiquement ici si besoin.
     // Sentry est déjà configuré via sentry-init et tunnel API.
-    // console.error(error);
+    // console.error(error);eee
   }, [error]);
 
   return (
