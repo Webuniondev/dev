@@ -15,6 +15,20 @@ export const userLoginSchema = z.object({
 
 export type UserLoginInput = z.infer<typeof userLoginSchema>;
 
+// Profil utilisateur (upsert)
+export const profileUpsertSchema = z.object({
+  last_name: z.string().min(1).max(120),
+  first_name: z.string().min(1).max(120),
+  address: z.string().max(400).optional().or(z.literal("")).transform((v) => (v === "" ? undefined : v)),
+  postal_code: z
+    .string()
+    .regex(/^[0-9A-Za-z\-\s]{3,12}$/)
+    .optional(),
+  city: z.string().max(160).optional(),
+  phone_number: z
+    .string()
+    .regex(/^[0-9+().\-\s]{5,20}$/)
+    .optional(),
+});
 
-
-
+export type ProfileUpsertInput = z.infer<typeof profileUpsertSchema>;

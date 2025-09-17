@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
+import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    // Active AVIF puis WebP (ordre de préférence)
+    formats: ["image/avif", "image/webp"],
+  },
 };
 
-export default nextConfig;
+const withAnalyzer = withBundleAnalyzer({ enabled: process.env.ANALYZE === "true" });
+export default withAnalyzer(nextConfig);

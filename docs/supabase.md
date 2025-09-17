@@ -21,9 +21,9 @@ Voir `.env.local.example` à la racine pour un modèle.
 
 ## RLS – approche recommandée
 
-1) Activer RLS par table (least‑privilege). 
-2) Définir des policies explicites (lecture/écriture séparées).
-3) Tester chaque policy (anon vs authenticated) avant mise en prod.
+1. Activer RLS par table (least‑privilege).
+2. Définir des policies explicites (lecture/écriture séparées).
+3. Tester chaque policy (anon vs authenticated) avant mise en prod.
 
 Exemples de patterns (à adapter à votre schéma):
 
@@ -54,5 +54,54 @@ NB: Les policies s’exécutent côté Supabase. Versionnez vos DDL/policies et 
 - Nommer les fichiers avec timestamp + description (ex: `2025-09-16_profiles_policies.sql`)
 - Documenter les rollbacks et penser à la rétro‑compatibilité
 
+## Schéma: user_profile (liée à auth.users)
 
+Table: `public.user_profile`
+- Clé primaire: `user_id uuid` (FK `auth.users(id)`, cascade delete)
+- Champs: `last_name`, `first_name`, `address`, `postal_code`, `city`, `phone_number`, `created_at`, `updated_at`
+- Contraintes: longueurs/regex sur `postal_code` et `phone_number`
+- Index: `city`, `postal_code`
+- Trigger: `updated_at` auto (UTC)
+- RLS: propriétaire seulement (select/insert/update où `auth.uid() = user_id`)
+- Rôle: colonne `role_key` (FK `public.user_role(key)`) défaut `user`
 
+Fichier de migration: `supabase/migrations/20250917_user_profile.sql`
+
+## Schéma: user_role (liste blanche)
+
+Table: `public.user_role`
+- `key` (PK): `user | pro | admin`
+- `label`: libellé affichable
+- RLS: lecture publique (table non sensible)
+
+Fichier de migration: `supabase/migrations/20250917_user_role.sql`
+
+Tests recommandés:
+- Anon: `select`/`insert`/`update` → refusés
+- Auth utilisateur A: `select`/`upsert`/`update` sur `user_id = A` → autorisés; `user_id = B` → refusés
+- Admin (service role via serveur): accès privilégié si nécessaire dans des opérations backend uniquement
+
+### Schéma Zod associé
+
+Source: `src/lib/validation/user.ts`
+
+```ts
+export const profileUpsertSchema = z.object({
+  last_name: z.string().min(1).max(120),
+  first_name: z.string().min(1).max(120),
+  address: z.string().max(400).optional().or(z.literal(""))
+    .transform((v) => (v === "" ? undefined : v)),
+  postal_code: z.string().regex(/^[0-9A-Za-z\-\s]{3,12}$/).optional(),
+  city: z.string().max(160).optional(),
+  phone_number: z.string().regex(/^[0-9+().\-\s]{5,20}$/).optional(),
+});
+```
+
+Correspondance champs ↔ colonnes table `public.user_profile`:
+- `last_name` ↔ `last_name`
+- `first_name` ↔ `first_name`
+- `address` ↔ `address`
+- `postal_code` ↔ `postal_code`
+- `city` ↔ `city`
+- `phone_number` ↔ `phone_number`
+- `role_key` ↔ `role_key` (FK user_role)

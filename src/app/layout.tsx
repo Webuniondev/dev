@@ -3,6 +3,10 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { AuthGateway } from "@/components/auth-gateway";
+import { ToastWelcome } from "@/components/toast-welcome";
+import { supabaseServer } from "@/lib/supabase/server";
+
 import { AppProviders } from "./providers";
 import { SentryInit } from "./sentry-init";
 
@@ -30,8 +34,43 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
         <SentryInit />
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          <UserSnapshot>{children}</UserSnapshot>
+        </AppProviders>
+        {/* Client: affiche un toast vert post-connexion */}
+        <ToastWelcome />
       </body>
     </html>
+  );
+}
+
+async function UserSnapshot({ children }: { children: React.ReactNode }) {
+  const supabase = await supabaseServer({ readOnly: true });
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  let roleKey: "user" | "pro" | "admin" | null = null;
+  let displayName: string | null = null;
+  if (user) {
+    const { data: prof } = await supabase
+      .from("user_profile")
+      .select("role_key, first_name, last_name")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    roleKey = (prof?.role_key as "user" | "pro" | "admin" | null) ?? null;
+    displayName = `${prof?.first_name ?? ""} ${prof?.last_name ?? ""}`.trim() || null;
+  }
+
+  return (
+    <>
+      {/* Hydrate Zustand auth store on client */}
+      <AuthGateway
+        userId={user?.id ?? null}
+        email={user?.email ?? null}
+        roleKey={roleKey}
+        displayName={displayName ?? (user?.user_metadata?.full_name ?? null)}
+      />
+      {children}
+    </>
   );
 }

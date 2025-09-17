@@ -1,0 +1,61 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+Le projet : 
+
+L'idée est de mettre en place une application de mise en relation pro / client. 
+
+## Responsive & Mobile‑First (Next.js + Tailwind)
+
+Principes généraux
+- Mobile‑first: concevoir d’abord pour <640px, puis élargir avec les breakpoints Tailwind (`sm`, `md`, `lg`, `xl`).
+- Server‑first: privilégier RSC/Route Handlers; réduire le JS côté client pour améliorer TTI sur mobile.
+- Accessibilité: structure sémantique (`header`, `main`, `nav`, `footer`), contrastes, focus visibles, tailles tactiles ≥ 44px.
+
+Tailwind – conventions
+- Grille/spacing: utiliser `container`, `grid`, `flex`, `gap-x/y-…`, `p-…`, `sm:…` pour les adaptations.
+- Typo/fluid: tailles réactives (`text-base sm:text-lg`), `leading-relaxed`, `tracking-tight`.
+- Cacher/afficher: `hidden sm:block` plutôt que JS.
+- Composants UI: réutiliser shadcn/ui; ne pas surcharger via CSS custom si utilitaires suffisent.
+
+Images & médias
+- `next/image` obligatoire, `sizes` explicites, formats AVIF/WebP activés (déjà configurés).
+- Dimensions fixes ou ratio (`aspect-video`) pour éviter le layout shift.
+- Lazy‑loading par défaut; `priority` uniquement pour l’above‑the‑fold.
+
+Navigation & interaction
+- Zones tactiles: boutons/links avec `h-10` min, `px-4`, `gap-2`.
+- Barres fixes: éviter les éléments “sticky” lourds sur mobile si non essentiels.
+- Gestes/scroll: préserver le scroll natif, éviter overlays non nécessaires.
+
+Performances mobiles
+- Code splitting: `next/dynamic` pour composants lourds non‑critiques (cartes, graphiques, éditeurs).
+- Minimiser `use client`; éviter états globaux inutiles. Préférer RSC et streaming.
+- Réseau: compresser réponses, valider cache HTTP, éviter sur‑fetch côté client (React Query avec clés précises + staleTime).
+
+Mise en page
+- Conteneur: `container mx-auto max-w-screen-xl px-4 sm:px-6`.
+- Colonnes: mobile en pile (`flex-col`), `sm:flex-row` à partir de tablettes.
+- Cartes/listes: `space-y-…` en mobile, `sm:grid sm:grid-cols-… sm:gap-…` en large.
+
+Formulaires
+- Inputs plein écran en mobile (`w-full`), labels visibles, aides courtes.
+- Claviers adaptés: `inputmode`, `type=email/tel/number`.
+- Validation progressive via Zod côté serveur; messages d’erreur concis.
+
+Composants client
+- Suspense: fallbacks très légers (Skeletons) et courts.
+- Éviter modales imbriquées sur mobile; préférer `Sheet` (slide‑over) et `Dialog` plein écran.
+
+Testing & suivi
+- Vérifier responsive via DevTools (mobile emulation) + Lighthouse mobile.
+- CI: budgets bundle pour toutes les pages; surveiller « First Contentful Paint » mobile.
+
+Exemples rapides
+- Container page:
+  - `<div className="container mx-auto max-w-screen-xl px-4 sm:px-6">…</div>`
+- Liste responsive:
+  - `grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3`

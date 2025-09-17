@@ -11,6 +11,3 @@ Sentry.init({
   tunnel: "/api/monitoring",
   debug: false,
 });
-
-
-

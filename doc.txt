@@ -1,11 +1,10 @@
-Configurer Supabase SDK (client/server), variables .env, docs RLS
-Définir RLS et policies minimales (notes/docs; exécution côté Supabase)
 Configurer Stripe SDK, .env, Customer Portal, webhooks route handler
 Vérifier signature Stripe dans route handler (server-only)
-Installer TanStack React Query et Provider dans frontière client
+Installer TanStack React Query et Provider dans frontière client — FAIT (16/09/2025)
 Mettre en place un store Zustand d’exemple (client)
-Optimiser images avec next/image (WebP/AVIF, tailles)
-Pages d’erreur et fallbacks: error.tsx, not-found.tsx, Suspense
+Mettre en place un store Zustand d’exemple (client) — FAIT (17/09/2025)
+Optimiser images avec next/image (WebP/AVIF, tailles) — FAIT (17/09/2025)
+Pages d’erreur et fallbacks: error.tsx, not-found.tsx, Suspense — FAIT (17/09/2025)
 Tests: Jest + React Testing Library + MSW
-CI basique (lint + test) et @next/bundle-analyzer
+CI basique (lint + test) et @next/bundle-analyzer — FAIT (17/09/2025)
 Préparer .env.local.example et README/status.md

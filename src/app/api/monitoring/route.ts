@@ -22,7 +22,3 @@ export async function POST(req: NextRequest) {
 
   return new NextResponse(null, { status: res.status });
 }
-
-
-
-

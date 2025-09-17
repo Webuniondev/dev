@@ -7,8 +7,3 @@ export const AppProviders = ({ children }: PropsWithChildren) => {
   const [queryClient] = useState(() => new QueryClient());
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };
-
-
-
-
-

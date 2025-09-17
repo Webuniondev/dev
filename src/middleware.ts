@@ -1,5 +1,5 @@
 import type { CspDirectives } from "@next-safe/middleware";
-import { chainMatch, csp,isPageRequest } from "@next-safe/middleware";
+import { chainMatch, csp, isPageRequest } from "@next-safe/middleware";
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -9,6 +9,15 @@ let sentryOrigin: string | undefined;
 try {
   if (sentryDsn) {
     sentryOrigin = new URL(sentryDsn).origin;
+  }
+} catch {}
+
+// Autoriser également l'origine Supabase si définie
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+let supabaseOrigin: string | undefined;
+try {
+  if (supabaseUrl) {
+    supabaseOrigin = new URL(supabaseUrl).origin;
   }
 } catch {}
 
@@ -26,6 +35,7 @@ const DIRECTIVES_DEV = {
     "localhost:*",
     "https:",
     ...(sentryOrigin ? [sentryOrigin] : []),
+    ...(supabaseOrigin ? [supabaseOrigin] : []),
   ],
   "frame-ancestors": ["self"],
   "frame-src": ["self"],
@@ -39,7 +49,11 @@ const DIRECTIVES_PROD = {
   "style-src": ["self"],
   "img-src": ["self", "data:", "blob:"],
   "font-src": ["self", "data:"],
-  "connect-src": ["self", ...(sentryOrigin ? [sentryOrigin] : [])],
+  "connect-src": [
+    "self",
+    ...(sentryOrigin ? [sentryOrigin] : []),
+    ...(supabaseOrigin ? [supabaseOrigin] : []),
+  ],
   "frame-ancestors": ["self"],
   "frame-src": ["self"],
   "object-src": ["none"],
@@ -48,8 +62,7 @@ const DIRECTIVES_PROD = {
 const directives = isDev ? DIRECTIVES_DEV : DIRECTIVES_PROD;
 
 export default chainMatch(isPageRequest)(
-  csp({ directives: directives as unknown as CspDirectives, reportOnly: false })
+  csp({ directives: directives as unknown as CspDirectives, reportOnly: false }),
 );
 
 export const config = { matcher: "/:path*" };
-
