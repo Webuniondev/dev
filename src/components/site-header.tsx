@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { signOutAction } from "@/app/actions/auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabaseServer } from "@/lib/supabase/server";
 
@@ -11,6 +12,7 @@ export async function SiteHeader() {
     data: { user },
   } = await supabase.auth.getUser();
   let displayName: string | null = null;
+  let avatarFallback: string = "U";
   if (user) {
     const { data: prof } = await supabase
       .from("user_profile")
@@ -21,6 +23,18 @@ export async function SiteHeader() {
     const fromMeta = (user.user_metadata?.full_name as string | undefined) ?? undefined;
     const fromEmail = user.email ?? undefined;
     displayName = (fromProfile || fromMeta || fromEmail) ?? null;
+    
+    // Générer les initiales pour l'avatar fallback
+    if (prof?.first_name && prof?.last_name) {
+      avatarFallback = `${prof.first_name.charAt(0)}${prof.last_name.charAt(0)}`.toUpperCase();
+    } else if (fromMeta) {
+      const names = fromMeta.split(' ');
+      avatarFallback = names.length > 1 
+        ? `${names[0].charAt(0)}${names[names.length - 1].charAt(0)}`.toUpperCase()
+        : names[0].charAt(0).toUpperCase();
+    } else if (user.email) {
+      avatarFallback = user.email.charAt(0).toUpperCase();
+    }
   }
 
   return (
@@ -29,8 +43,12 @@ export async function SiteHeader() {
         <div className="font-semibold">OURSPACE</div>
         {user ? (
           <DropdownMenu>
-            <DropdownMenuTrigger className="rounded-md border px-3 py-1.5 text-sm hover:bg-slate-50">
-              {displayName}
+            <DropdownMenuTrigger className="flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm hover:bg-slate-50">
+              <Avatar className="size-6">
+                <AvatarImage src={user.user_metadata?.avatar_url} alt={displayName || "User"} />
+                <AvatarFallback className="text-xs">{avatarFallback}</AvatarFallback>
+              </Avatar>
+              <span>{displayName}</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem asChild>
