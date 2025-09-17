@@ -45,12 +45,26 @@ const DIRECTIVES_DEV = {
 const DIRECTIVES_PROD = {
   "base-uri": ["self"],
   "default-src": ["self"],
-  "script-src": ["self"],
-  "style-src": ["self"],
-  "img-src": ["self", "data:", "blob:"],
-  "font-src": ["self", "data:"],
+  "script-src": [
+    "self",
+    // Autoriser les scripts inline de Next.js pour l'hydratation
+    "unsafe-inline",
+    // CDNs Vercel pour Next.js
+    "https://va.vercel-scripts.com",
+    "https://vitals.vercel-insights.com",
+  ],
+  "style-src": [
+    "self", 
+    // Autoriser les styles inline pour Tailwind et composants
+    "unsafe-inline"
+  ],
+  "img-src": ["self", "data:", "blob:", "https:"],
+  "font-src": ["self", "data:", "https:"],
   "connect-src": [
     "self",
+    "https:",
+    // Analytics Vercel
+    "https://vitals.vercel-insights.com",
     ...(sentryOrigin ? [sentryOrigin] : []),
     ...(supabaseOrigin ? [supabaseOrigin] : []),
   ],
