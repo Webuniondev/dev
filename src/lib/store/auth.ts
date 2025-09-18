@@ -7,6 +7,7 @@ export type AuthUserSnapshot = {
   email: string | null;
   roleKey: "user" | "pro" | "admin" | null;
   displayName?: string | null;
+  avatarUrl?: string | null;
 };
 
 type AuthState = AuthUserSnapshot & {
@@ -24,8 +25,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       email: snapshot.email ?? null,
       roleKey: snapshot.roleKey ?? null,
       displayName: snapshot.displayName ?? null,
+      avatarUrl: snapshot.avatarUrl ?? null,
     })),
-  clearAuth: () => set(() => ({ userId: null, email: null, roleKey: null, displayName: null })),
+  clearAuth: () => set(() => ({ userId: null, email: null, roleKey: null, displayName: null, avatarUrl: null })),
 }));
 
 

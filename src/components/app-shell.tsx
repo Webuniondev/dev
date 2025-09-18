@@ -5,18 +5,21 @@ import { useMemo, useState } from "react";
 
 import { SidebarApp } from "@/components/sidebar-app";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { useAuthStore } from "@/lib/store/auth";
 
 type Props = {
   displayName: string | null;
   email: string | null;
   roleKey: "user" | "pro" | "admin" | null;
+  avatarUrl?: string | null;
   children: React.ReactNode;
 };
 
-export function AppShell({ displayName, email, roleKey, children }: Props) {
+export function AppShell({ displayName, email, roleKey, avatarUrl, children }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const storeAvatarUrl = useAuthStore((s) => s.avatarUrl ?? null);
 
   const title = useMemo(() => {
     if (!pathname || pathname === "/") return "Accueil";
@@ -28,7 +31,12 @@ export function AppShell({ displayName, email, roleKey, children }: Props) {
   return (
     <div className={`min-h-dvh grid grid-cols-1 ${collapsed ? "sm:grid-cols-1" : "sm:grid-cols-[16rem_1fr]"}`}>
       {!collapsed && (
-        <SidebarApp displayName={displayName} email={email} roleKey={roleKey} />
+        <SidebarApp
+          displayName={displayName}
+          email={email}
+          roleKey={roleKey}
+          avatarUrl={storeAvatarUrl ?? avatarUrl ?? null}
+        />
       )}
       <div className={`flex min-h-dvh flex-col ${!collapsed ? "border-l border-slate-800" : ""}`}>
         <header className="h-14 bg-slate-900 text-slate-100 border-b border-slate-800 flex items-center px-4 sm:px-6">
@@ -54,7 +62,13 @@ export function AppShell({ displayName, email, roleKey, children }: Props) {
       {/* Mobile drawer */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" className="p-0 w-64 bg-slate-900 text-slate-100">
-          <SidebarApp displayName={displayName} email={email} roleKey={roleKey} mobile />
+          <SidebarApp
+            displayName={displayName}
+            email={email}
+            roleKey={roleKey}
+            avatarUrl={storeAvatarUrl ?? avatarUrl ?? null}
+            mobile
+          />
         </SheetContent>
       </Sheet>
     </div>

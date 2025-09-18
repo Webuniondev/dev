@@ -15,10 +15,11 @@ export async function SiteHeader() {
   let displayName: string | null = null;
   let avatarFallback: string = "U";
   let roleKey: string | null = null;
+  let avatarUrl: string | null = null;
   if (user) {
     const { data: prof } = await supabase
       .from("user_profile")
-      .select("first_name, last_name, role_key")
+      .select("first_name, last_name, role_key, avatar_url")
       .eq("user_id", user.id)
       .maybeSingle();
     const fromProfile = `${prof?.first_name ?? ""} ${prof?.last_name ?? ""}`.trim();
@@ -26,6 +27,7 @@ export async function SiteHeader() {
     const fromEmail = user.email ?? undefined;
     displayName = (fromProfile || fromMeta || fromEmail) ?? null;
     roleKey = prof?.role_key ?? null;
+    avatarUrl = prof?.avatar_url ?? (user.user_metadata?.avatar_url as string | null) ?? null;
     
     // Générer les initiales pour l'avatar fallback
     if (prof?.first_name && prof?.last_name) {
@@ -53,7 +55,7 @@ export async function SiteHeader() {
               {/* Header avec infos utilisateur */}
               <div className="flex items-center gap-3 p-4 bg-slate-50 border-b">
                 <Avatar className="size-10">
-                  <AvatarImage src={user.user_metadata?.avatar_url} alt={displayName || "User"} />
+                  <AvatarImage src={avatarUrl ?? undefined} alt={displayName || "User"} />
                   <AvatarFallback className="text-sm font-medium">{avatarFallback}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">

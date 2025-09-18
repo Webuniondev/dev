@@ -29,6 +29,14 @@ export const profileUpsertSchema = z.object({
     .string()
     .regex(/^[0-9+().\-\s]{5,20}$/)
     .optional(),
+  avatar_url: z.string().url().max(2048).optional(),
 });
 
 export type ProfileUpsertInput = z.infer<typeof profileUpsertSchema>;
+
+// Mise à jour partielle du profil (PATCH)
+export const profilePartialUpdateSchema = profileUpsertSchema
+  .partial()
+  .refine((obj) => Object.keys(obj).length > 0, { message: "Payload vide" });
+
+export type ProfilePartialUpdateInput = z.infer<typeof profilePartialUpdateSchema>;

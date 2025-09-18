@@ -26,7 +26,14 @@ const DIRECTIVES_DEV = {
   "default-src": ["self"],
   "script-src": ["self", "unsafe-inline", "unsafe-eval"],
   "style-src": ["self", "unsafe-inline"],
-  "img-src": ["self", "data:", "blob:"],
+  // Autoriser images externes en dev (dont Supabase)
+  "img-src": [
+    "self",
+    "data:",
+    "blob:",
+    "https:",
+    ...(supabaseOrigin ? [supabaseOrigin] : []),
+  ],
   "font-src": ["self", "data:"],
   "connect-src": [
     "self",
@@ -58,7 +65,14 @@ const DIRECTIVES_PROD = {
     // Autoriser les styles inline pour Tailwind et composants
     "unsafe-inline"
   ],
-  "img-src": ["self", "data:", "blob:", "https:"],
+  // Autoriser images externes (dont Supabase) de manière contrôlée
+  "img-src": [
+    "self",
+    "data:",
+    "blob:",
+    "https:",
+    ...(supabaseOrigin ? [supabaseOrigin] : []),
+  ],
   "font-src": ["self", "data:", "https:"],
   "connect-src": [
     "self",

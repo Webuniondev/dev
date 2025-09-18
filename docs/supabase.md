@@ -64,8 +64,10 @@ Table: `public.user_profile`
 - Trigger: `updated_at` auto (UTC)
 - RLS: propriétaire seulement (select/insert/update où `auth.uid() = user_id`)
 - Rôle: colonne `role_key` (FK `public.user_role(key)`) défaut `user`
+ - Avatar: `avatar_url text` (URL publique du bucket `avatars`)
 
 Fichier de migration: `supabase/migrations/20250917_user_profile.sql`
+Complément avatars: `supabase/migrations/20250918_user_avatar.sql`
 
 ## Schéma: user_role (liste blanche)
 
@@ -94,7 +96,17 @@ export const profileUpsertSchema = z.object({
   postal_code: z.string().regex(/^[0-9A-Za-z\-\s]{3,12}$/).optional(),
   city: z.string().max(160).optional(),
   phone_number: z.string().regex(/^[0-9+().\-\s]{5,20}$/).optional(),
+  avatar_url: z.string().url().max(2048).optional(),
 });
+
+## Stockage avatars (bucket)
+
+- Bucket: `avatars` (public: true)
+- Policies:
+  - `select` pour tout le monde sur ce bucket (lecture publique)
+  - `all` pour l’utilisateur authentifié limité à son dossier `avatars/{auth.uid()}/*`
+- Chemin recommandé: `avatars/{user_id}/{timestamp}_{filename}`
+- Lors de l’upload, mettre à jour `public.user_profile.avatar_url` avec l’URL publique
 ```
 
 Correspondance champs ↔ colonnes table `public.user_profile`:
