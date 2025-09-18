@@ -29,7 +29,9 @@ export function AppShell({ displayName, email, roleKey, avatarUrl, children }: P
   }, [pathname]);
 
   return (
-    <div className={`min-h-dvh grid grid-cols-1 ${collapsed ? "sm:grid-cols-1" : "sm:grid-cols-[16rem_1fr]"}`}>
+    <div
+      className={`min-h-dvh grid grid-cols-1 ${collapsed ? "sm:grid-cols-1" : "sm:grid-cols-[16rem_1fr]"}`}
+    >
       {!collapsed && (
         <SidebarApp
           displayName={displayName}
@@ -44,7 +46,10 @@ export function AppShell({ displayName, email, roleKey, avatarUrl, children }: P
             type="button"
             aria-label="Basculer la barre latérale"
             onClick={() => {
-              if (typeof window !== "undefined" && window.matchMedia("(min-width: 640px)").matches) {
+              if (
+                typeof window !== "undefined" &&
+                window.matchMedia("(min-width: 640px)").matches
+              ) {
                 setCollapsed((v) => !v);
               } else {
                 setMobileOpen(true);
@@ -74,5 +79,3 @@ export function AppShell({ displayName, email, roleKey, avatarUrl, children }: P
     </div>
   );
 }
-
-

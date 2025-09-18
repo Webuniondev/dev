@@ -1,34 +1,49 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { toast } from "sonner";
 
 import { useAuthStore } from "@/lib/store/auth";
 
 export function ToastWelcome() {
   const displayName = useAuthStore((s) => s.displayName);
-  const hasShown = useRef(false);
+  const email = useAuthStore((s) => s.email);
+  const router = useRouter();
+  const shown = useRef(false);
 
   useEffect(() => {
-    if (hasShown.current) return;
-    if (!displayName) return;
-    hasShown.current = true;
-    const div = document.createElement("div");
-    div.textContent = `Bonjour ${displayName}!`;
-    div.style.position = "fixed";
-    div.style.right = "16px";
-    div.style.bottom = "16px";
-    div.style.background = "#22c55e"; // green-500
-    div.style.color = "white";
-    div.style.padding = "8px 12px";
-    div.style.borderRadius = "8px";
-    div.style.boxShadow = "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)";
-    div.style.zIndex = "9999";
-    document.body.appendChild(div);
-    const t = setTimeout(() => {
-      div.remove();
-    }, 3000);
-    return () => clearTimeout(t);
-  }, [displayName]);
+    if (shown.current) return;
+    // Lire un cookie éphémère 'welcome=1' posé par la Server Action de login
+    const shouldWelcome = document.cookie.split(/;\s*/).some((c) => c.startsWith("welcome=1"));
+    if (!shouldWelcome) return;
+
+    // Attendre que le store soit hydraté si besoin
+    const tryShow = () => {
+      const name = displayName || email;
+      if (!name) return false;
+      shown.current = true;
+      toast.success(`Bonjour, ${name} !\nRavi de vous revoir !`);
+      // Supprimer le cookie pour éviter la réapparition
+      try {
+        document.cookie = "welcome=; Max-Age=0; path=/";
+      } catch {}
+      return true;
+    };
+
+    if (tryShow()) return;
+    const start = Date.now();
+    const id = window.setInterval(() => {
+      if (Date.now() - start > 1500) {
+        window.clearInterval(id);
+        return;
+      }
+      if (tryShow()) {
+        window.clearInterval(id);
+      }
+    }, 100);
+    return () => window.clearInterval(id);
+  }, [displayName, email, router]);
 
   return null;
 }

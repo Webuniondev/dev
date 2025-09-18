@@ -59,5 +59,3 @@ export async function ProfileCard() {
     </section>
   );
 }
-
-

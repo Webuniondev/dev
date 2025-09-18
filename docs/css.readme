@@ -1,0 +1,26 @@
+Polices & Utilitaires CSS
+
+Ce projet utilise next/font (Google) pour charger les polices au build, sans requêtes runtime et compatible CSP stricte.
+
+Polices installées
+- Caveat (Google): variable CSS --font-caveat (poids 400, 700)
+- Geist Sans, Geist Mono (Next): --font-geist-sans, --font-geist-mono
+- Inter (Google): --font-inter
+
+Intégration (layout)
+- Déclarées dans src/app/layout.tsx via next/font/google, exposées comme variables CSS, incluses sur <body>.
+
+Classes utilitaires Tailwind
+- .font-inter → var(--font-inter)
+- .font-caveat → var(--font-caveat)
+
+Exemple d’usage (JSX)
+<Example>
+  <h1 className="text-2xl font-caveat">Titre manuscrit (Caveat)</h1>
+  <p className="font-inter">Paragraphe en Inter.</p>
+</Example>
+
+Notes
+- Préférer next/font à @import ou <link> pour de meilleures perfs et une CSP simplifiée.
+- Ajouter de nouvelles polices: importer via next/font/google, ajouter la variable CSS et la classe utilitaire dans src/app/globals.css.
+

@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuthStore } from "@/lib/store/auth";
@@ -92,5 +91,3 @@ export function AvatarUploader({ initialUrl }: AvatarUploaderProps) {
     </div>
   );
 }
-
-

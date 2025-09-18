@@ -57,6 +57,7 @@ NB: Les policies s’exécutent côté Supabase. Versionnez vos DDL/policies et 
 ## Schéma: user_profile (liée à auth.users)
 
 Table: `public.user_profile`
+
 - Clé primaire: `user_id uuid` (FK `auth.users(id)`, cascade delete)
 - Champs: `last_name`, `first_name`, `address`, `postal_code`, `city`, `phone_number`, `created_at`, `updated_at`
 - Contraintes: longueurs/regex sur `postal_code` et `phone_number`
@@ -64,7 +65,7 @@ Table: `public.user_profile`
 - Trigger: `updated_at` auto (UTC)
 - RLS: propriétaire seulement (select/insert/update où `auth.uid() = user_id`)
 - Rôle: colonne `role_key` (FK `public.user_role(key)`) défaut `user`
- - Avatar: `avatar_url text` (URL publique du bucket `avatars`)
+- Avatar: `avatar_url text` (URL publique du bucket `avatars`)
 
 Fichier de migration: `supabase/migrations/20250917_user_profile.sql`
 Complément avatars: `supabase/migrations/20250918_user_avatar.sql`
@@ -72,6 +73,7 @@ Complément avatars: `supabase/migrations/20250918_user_avatar.sql`
 ## Schéma: user_role (liste blanche)
 
 Table: `public.user_role`
+
 - `key` (PK): `user | pro | admin`
 - `label`: libellé affichable
 - RLS: lecture publique (table non sensible)
@@ -79,6 +81,7 @@ Table: `public.user_role`
 Fichier de migration: `supabase/migrations/20250917_user_role.sql`
 
 Tests recommandés:
+
 - Anon: `select`/`insert`/`update` → refusés
 - Auth utilisateur A: `select`/`upsert`/`update` sur `user_id = A` → autorisés; `user_id = B` → refusés
 - Admin (service role via serveur): accès privilégié si nécessaire dans des opérations backend uniquement
@@ -110,6 +113,7 @@ export const profileUpsertSchema = z.object({
 ```
 
 Correspondance champs ↔ colonnes table `public.user_profile`:
+
 - `last_name` ↔ `last_name`
 - `first_name` ↔ `first_name`
 - `address` ↔ `address`

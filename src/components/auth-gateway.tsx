@@ -16,9 +16,13 @@ type Props = {
 export function AuthGateway({ userId, email, roleKey, displayName, avatarUrl }: Props) {
   const setAuth = useAuthStore((s) => s.setAuth);
   useEffect(() => {
-    setAuth({ userId, email, roleKey, displayName: displayName ?? null, avatarUrl: avatarUrl ?? null });
+    setAuth({
+      userId,
+      email,
+      roleKey,
+      displayName: displayName ?? null,
+      avatarUrl: avatarUrl ?? null,
+    });
   }, [userId, email, roleKey, displayName, avatarUrl, setAuth]);
   return null;
 }
-
-

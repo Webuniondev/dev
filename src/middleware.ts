@@ -27,13 +27,7 @@ const DIRECTIVES_DEV = {
   "script-src": ["self", "unsafe-inline", "unsafe-eval"],
   "style-src": ["self", "unsafe-inline"],
   // Autoriser images externes en dev (dont Supabase)
-  "img-src": [
-    "self",
-    "data:",
-    "blob:",
-    "https:",
-    ...(supabaseOrigin ? [supabaseOrigin] : []),
-  ],
+  "img-src": ["self", "data:", "blob:", "https:", ...(supabaseOrigin ? [supabaseOrigin] : [])],
   "font-src": ["self", "data:"],
   "connect-src": [
     "self",
@@ -61,18 +55,12 @@ const DIRECTIVES_PROD = {
     "https://vitals.vercel-insights.com",
   ],
   "style-src": [
-    "self", 
+    "self",
     // Autoriser les styles inline pour Tailwind et composants
-    "unsafe-inline"
+    "unsafe-inline",
   ],
   // Autoriser images externes (dont Supabase) de manière contrôlée
-  "img-src": [
-    "self",
-    "data:",
-    "blob:",
-    "https:",
-    ...(supabaseOrigin ? [supabaseOrigin] : []),
-  ],
+  "img-src": ["self", "data:", "blob:", "https:", ...(supabaseOrigin ? [supabaseOrigin] : [])],
   "font-src": ["self", "data:", "https:"],
   "connect-src": [
     "self",

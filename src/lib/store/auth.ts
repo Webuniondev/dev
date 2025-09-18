@@ -27,7 +27,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       displayName: snapshot.displayName ?? null,
       avatarUrl: snapshot.avatarUrl ?? null,
     })),
-  clearAuth: () => set(() => ({ userId: null, email: null, roleKey: null, displayName: null, avatarUrl: null })),
+  clearAuth: () =>
+    set(() => ({ userId: null, email: null, roleKey: null, displayName: null, avatarUrl: null })),
 }));
-
-

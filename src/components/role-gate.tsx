@@ -21,5 +21,3 @@ export function RoleGate({ allow, children, fallback = null }: Props) {
 
   return <>{isAllowed ? children : fallback}</>;
 }
-
-

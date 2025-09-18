@@ -19,7 +19,12 @@ export type UserLoginInput = z.infer<typeof userLoginSchema>;
 export const profileUpsertSchema = z.object({
   last_name: z.string().min(1).max(120),
   first_name: z.string().min(1).max(120),
-  address: z.string().max(400).optional().or(z.literal("")).transform((v) => (v === "" ? undefined : v)),
+  address: z
+    .string()
+    .max(400)
+    .optional()
+    .or(z.literal(""))
+    .transform((v) => (v === "" ? undefined : v)),
   postal_code: z
     .string()
     .regex(/^[0-9A-Za-z\-\s]{3,12}$/)

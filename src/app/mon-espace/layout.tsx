@@ -18,15 +18,21 @@ export default async function MonEspaceLayout({ children }: { children: ReactNod
       .eq("user_id", user.id)
       .maybeSingle();
     roleKey = (prof?.role_key as "user" | "pro" | "admin" | null) ?? null;
-    displayName = `${prof?.first_name ?? ""} ${prof?.last_name ?? ""}`.trim() || user.user_metadata?.full_name || null;
-    avatarUrl = prof?.avatar_url ?? (user.user_metadata?.avatar_url ?? null);
+    displayName =
+      `${prof?.first_name ?? ""} ${prof?.last_name ?? ""}`.trim() ||
+      user.user_metadata?.full_name ||
+      null;
+    avatarUrl = prof?.avatar_url ?? user.user_metadata?.avatar_url ?? null;
   }
 
   return (
-    <AppShell displayName={displayName} email={user?.email ?? null} roleKey={roleKey} avatarUrl={avatarUrl}>
+    <AppShell
+      displayName={displayName}
+      email={user?.email ?? null}
+      roleKey={roleKey}
+      avatarUrl={avatarUrl}
+    >
       {children}
     </AppShell>
   );
 }
-
-

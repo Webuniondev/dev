@@ -12,11 +12,21 @@ type SidebarAppProps = {
   mobile?: boolean;
 };
 
-export function SidebarApp({ displayName, email, roleKey, avatarUrl, mobile = false }: SidebarAppProps) {
+export function SidebarApp({
+  displayName,
+  email,
+  roleKey,
+  avatarUrl,
+  mobile = false,
+}: SidebarAppProps) {
   return (
-    <aside className={`${mobile ? "flex" : "hidden sm:flex"} w-64 flex-col min-h-dvh bg-slate-900 text-slate-100`}>
+    <aside
+      className={`${mobile ? "flex" : "hidden sm:flex"} w-64 flex-col min-h-dvh bg-slate-900 text-slate-100`}
+    >
       <div className="h-14 flex items-center border-b border-slate-800 px-4 text-sm uppercase tracking-wide">
-        <Link href="/" className="font-semibold hover:underline">OURSPACE</Link>
+        <Link href="/" className="font-semibold hover:underline">
+          OURSPACE
+        </Link>
       </div>
 
       <nav className="flex-1 px-2 py-3 space-y-1">
@@ -37,11 +47,17 @@ export function SidebarApp({ displayName, email, roleKey, avatarUrl, mobile = fa
           </Avatar>
           <div className="min-w-0">
             <div className="font-medium truncate">{displayName ?? email ?? "Utilisateur"}</div>
-            {roleKey ? <div className="text-slate-400 text-xs mt-0.5 truncate">{roleKey}</div> : null}
+            {roleKey ? (
+              <div className="text-slate-400 text-xs mt-0.5 truncate">{roleKey}</div>
+            ) : null}
           </div>
         </div>
         <form action={signOutAction} className="mt-3">
-          <Button type="submit" variant="outline" className="w-full bg-slate-800/50 text-slate-100 hover:bg-slate-800">
+          <Button
+            type="submit"
+            variant="outline"
+            className="w-full bg-slate-800/50 text-slate-100 hover:bg-slate-800"
+          >
             Se déconnecter
           </Button>
         </form>
@@ -49,5 +65,3 @@ export function SidebarApp({ displayName, email, roleKey, avatarUrl, mobile = fa
     </aside>
   );
 }
-
-

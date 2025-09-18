@@ -37,14 +37,10 @@ export default async function AdministrationPage() {
         <Card>
           <CardHeader>
             <CardTitle>Gestion des utilisateurs</CardTitle>
-            <CardDescription>
-              Voir et gérer tous les utilisateurs de la plateforme
-            </CardDescription>
+            <CardDescription>Voir et gérer tous les utilisateurs de la plateforme</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">
-              Fonctionnalité à implémenter
-            </p>
+            <p className="text-sm text-gray-500">Fonctionnalité à implémenter</p>
           </CardContent>
         </Card>
 
@@ -56,65 +52,47 @@ export default async function AdministrationPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">
-              Fonctionnalité à implémenter
-            </p>
+            <p className="text-sm text-gray-500">Fonctionnalité à implémenter</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <CardTitle>Configuration</CardTitle>
-            <CardDescription>
-              Paramètres généraux de l&apos;application
-            </CardDescription>
+            <CardDescription>Paramètres généraux de l&apos;application</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">
-              Fonctionnalité à implémenter
-            </p>
+            <p className="text-sm text-gray-500">Fonctionnalité à implémenter</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <CardTitle>Logs et activité</CardTitle>
-            <CardDescription>
-              Consulter les logs et l&apos;activité récente
-            </CardDescription>
+            <CardDescription>Consulter les logs et l&apos;activité récente</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">
-              Fonctionnalité à implémenter
-            </p>
+            <p className="text-sm text-gray-500">Fonctionnalité à implémenter</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <CardTitle>Gestion des contenus</CardTitle>
-            <CardDescription>
-              Modérer et gérer les contenus de la plateforme
-            </CardDescription>
+            <CardDescription>Modérer et gérer les contenus de la plateforme</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">
-              Fonctionnalité à implémenter
-            </p>
+            <p className="text-sm text-gray-500">Fonctionnalité à implémenter</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <CardTitle>Rapports</CardTitle>
-            <CardDescription>
-              Générer et consulter des rapports d&apos;activité
-            </CardDescription>
+            <CardDescription>Générer et consulter des rapports d&apos;activité</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">
-              Fonctionnalité à implémenter
-            </p>
+            <p className="text-sm text-gray-500">Fonctionnalité à implémenter</p>
           </CardContent>
         </Card>
       </div>

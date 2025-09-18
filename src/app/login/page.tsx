@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,9 @@ export default async function LoginPage({ searchParams }: PageProps) {
     data: { user: existingUser },
   } = await supabaseForCheck.auth.getUser();
   if (existingUser) {
+    // Déposer un cookie éphémère lisible côté client pour déclenchement du sonner
+    const cookieStore = await cookies();
+    cookieStore.set({ name: "welcome", value: "1", path: "/", maxAge: 15 });
     redirect("/mon-espace");
   }
 
@@ -66,22 +70,33 @@ export default async function LoginPage({ searchParams }: PageProps) {
   return (
     <main className="container mx-auto max-w-md px-4 sm:px-6 py-12">
       <h1 className="text-2xl font-semibold mb-6">Connexion</h1>
-      {errorMessage ? (
-        <p className="mb-4 text-sm text-destructive">{errorMessage}</p>
-      ) : null}
+      {errorMessage ? <p className="mb-4 text-sm text-destructive">{errorMessage}</p> : null}
       <form action={signIn} className="space-y-4">
         <div className="space-y-1">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" required autoComplete="email" placeholder="vous@domaine.com" />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="vous@domaine.com"
+          />
         </div>
         <div className="space-y-1">
           <Label htmlFor="password">Mot de passe</Label>
-          <Input id="password" name="password" type="password" required autoComplete="current-password" />
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            required
+            autoComplete="current-password"
+          />
         </div>
-        <Button type="submit" className="w-full">Se connecter</Button>
+        <Button type="submit" className="w-full">
+          Se connecter
+        </Button>
       </form>
     </main>
   );
 }
-
-
