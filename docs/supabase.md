@@ -465,18 +465,21 @@ API unifiée d'inscription avec schéma discriminant :
 2. Création profil avec `role_key = 'user'`
 3. Retour succès avec données utilisateur
 
-#### Inscription professionnel
+#### Inscription professionnel (création simplifiée)
 
 1. Création utilisateur auth (`createUser`)
-2. Création `user_profile` avec `role_key='pro'`
-3. Création `pro_profile` avec secteur/catégorie
-4. Retour succès avec données PRO
+2. Création `user_profile` avec `role_key='user'` (temporaire)
+3. Création `pro_profile` avec secteur/catégorie (obligatoires)
+4. Upgrade du rôle: `user_profile.role_key='pro'`
+   - Trigger `check_pro_profile_required` impose la présence d'un `pro_profile` au passage en `pro`.
 
 ### Sécurité
 
 - **Client admin** : Utilisation `supabaseAdmin()` pour création
 - **Validation** : Schémas Zod stricts côté API
 - **Unicité email** : Vérification via `listUsers()`
+ - **Triggers actifs** : `check_pro_profile_required` (AFTER sur `user_profile`)
+ - **Triggers retirés** : `validate_pro_profile` (verrou poule/œuf résolu)
 - **Transaction atomique** : Rollback automatique si erreur
 - **Cohérence métier** : Validation secteur ↔ catégorie
 

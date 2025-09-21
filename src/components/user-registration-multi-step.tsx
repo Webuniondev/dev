@@ -118,8 +118,8 @@ export function UserRegistrationMultiStep({ onBack, onSuccess }: UserRegistratio
   const validatePassword = (password: string, confirmPassword: string) => {
     const errors: string[] = [];
 
-    if (password.length < 7) {
-      errors.push("Le mot de passe doit contenir au moins 7 caractères");
+    if (password.length < 8) {
+      errors.push("Le mot de passe doit contenir au moins 8 caractères");
     }
 
     if (!/\d/.test(password)) {
@@ -134,21 +134,17 @@ export function UserRegistrationMultiStep({ onBack, onSuccess }: UserRegistratio
     return errors.length === 0;
   };
 
-  // Debounce pour la vérification email
-  useEffect(() => {
-    if (!formData.email) return;
-
-    const timer = setTimeout(() => {
-      checkEmailAvailability(formData.email);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [formData.email, checkEmailAvailability]);
+  // Vérification email uniquement au clic sur suivant
 
   const nextStep = () => {
-    if (currentStep < steps.length) {
-      setCurrentStep((prev) => prev + 1);
+    if (currentStep === 1) {
+      if (!formData.email || emailChecking) return;
+      checkEmailAvailability(formData.email).then(() => {
+        if (emailAvailable === true) setCurrentStep((prev) => prev + 1);
+      });
+      return;
     }
+    if (currentStep < steps.length) setCurrentStep((prev) => prev + 1);
   };
 
   const prevStep = () => {
@@ -263,6 +259,8 @@ export function UserRegistrationMultiStep({ onBack, onSuccess }: UserRegistratio
                   value={formData.email}
                   onChange={(e) => updateFormData("email", e.target.value)}
                   placeholder="vous@domaine.com"
+                  aria-describedby="email-help"
+                  aria-invalid={emailAvailable === false}
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                 />
                 {emailChecking && (
@@ -274,10 +272,10 @@ export function UserRegistrationMultiStep({ onBack, onSuccess }: UserRegistratio
 
               {/* Messages de validation email */}
               {formData.email && !emailChecking && emailAvailable === false && (
-                <p className="text-red-400 text-sm">Cette adresse email est déjà utilisée</p>
+                <p id="email-help" className="text-red-400 text-sm">Cette adresse email est déjà utilisée</p>
               )}
               {formData.email && !emailChecking && emailAvailable === true && (
-                <p className="text-green-400 text-sm">✓ Adresse email disponible</p>
+                <p id="email-help" className="text-green-400 text-sm">✓ Adresse email disponible</p>
               )}
             </div>
           </>
@@ -391,7 +389,7 @@ export function UserRegistrationMultiStep({ onBack, onSuccess }: UserRegistratio
                   type="password"
                   value={formData.password}
                   onChange={(e) => updateFormData("password", e.target.value)}
-                  placeholder="7 caractères + 1 chiffre"
+                  placeholder="8 caractères + 1 chiffre"
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                 />
               </div>

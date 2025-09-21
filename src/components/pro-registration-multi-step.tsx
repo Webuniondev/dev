@@ -173,8 +173,8 @@ export function ProRegistrationMultiStep({ onBack, onSuccess }: ProRegistrationM
   const validatePassword = (password: string, confirmPassword: string) => {
     const errors: string[] = [];
 
-    if (password.length < 7) {
-      errors.push("Le mot de passe doit contenir au moins 7 caractères");
+    if (password.length < 8) {
+      errors.push("Le mot de passe doit contenir au moins 8 caractères");
     }
 
     if (!/\d/.test(password)) {
@@ -189,21 +189,20 @@ export function ProRegistrationMultiStep({ onBack, onSuccess }: ProRegistrationM
     return errors.length === 0;
   };
 
-  // Debounce pour la vérification email
-  useEffect(() => {
-    if (!formData.email) return;
-
-    const timer = setTimeout(() => {
-      checkEmailAvailability(formData.email);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [formData.email, checkEmailAvailability]);
+  // Plus de vérification automatique: on vérifie au clic sur "Suivant"
 
   const nextStep = () => {
-    if (currentStep < steps.length) {
-      setCurrentStep((prev) => prev + 1);
+    if (currentStep === 1) {
+      // vérifier l'email uniquement ici
+      if (!formData.email || emailChecking) return;
+      checkEmailAvailability(formData.email).then(() => {
+        if (emailAvailable === true) {
+          setCurrentStep((prev) => prev + 1);
+        }
+      });
+      return;
     }
+    if (currentStep < steps.length) setCurrentStep((prev) => prev + 1);
   };
 
   const prevStep = () => {
@@ -321,6 +320,8 @@ export function ProRegistrationMultiStep({ onBack, onSuccess }: ProRegistrationM
                   value={formData.email}
                   onChange={(e) => updateFormData("email", e.target.value)}
                   placeholder="contact@votreentreprise.com"
+                  aria-describedby="email-help"
+                  aria-invalid={emailAvailable === false}
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                 />
                 {emailChecking && (
@@ -332,10 +333,10 @@ export function ProRegistrationMultiStep({ onBack, onSuccess }: ProRegistrationM
 
               {/* Messages de validation email */}
               {formData.email && !emailChecking && emailAvailable === false && (
-                <p className="text-red-400 text-sm">Cette adresse email est déjà utilisée</p>
+                <p id="email-help" className="text-red-400 text-sm">Cette adresse email est déjà utilisée</p>
               )}
               {formData.email && !emailChecking && emailAvailable === true && (
-                <p className="text-green-400 text-sm">✓ Adresse email disponible</p>
+                <p id="email-help" className="text-green-400 text-sm">✓ Adresse email disponible</p>
               )}
             </div>
           </>
