@@ -1,61 +1,53 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
+import { withApiProtection } from "@/lib/api-security";
 import { supabaseServer } from "@/lib/supabase/server";
 
-// GET /api/pro-data - Récupérer les secteurs et catégories pour les formulaires
-export async function GET(req: NextRequest) {
+// GET /api/pro-data - Récupérer les secteurs et catégories pour l'inscription PRO
+async function getProData() {
   try {
     const supabase = await supabaseServer({ readOnly: true });
-    const { searchParams } = new URL(req.url);
-    const sectorKey = searchParams.get("sector");
 
-    // Si un secteur spécifique est demandé, récupérer ses catégories
-    if (sectorKey) {
-      const { data: categories, error } = await supabase
-        .from("pro_category")
-        .select("key, label, description")
-        .eq("sector_key", sectorKey)
-        .order("label");
+    // Récupérer les secteurs et leurs catégories
+    const { data: sectors, error: sectorsError } = await supabase
+      .from("pro_sector")
+      .select(
+        `
+        key,
+        label,
+        description,
+        pro_category:pro_category (
+          key,
+          label,
+          description
+        )
+      `,
+      )
+      .order("label");
 
-      if (error) {
-        console.error("Erreur lors de la récupération des catégories:", error);
-        return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
-      }
-
-      return NextResponse.json({ categories });
-    }
-
-    // Récupérer tous les secteurs avec leurs catégories
-    const [{ data: sectors, error: sectorsError }, { data: categories, error: categoriesError }] =
-      await Promise.all([
-        supabase.from("pro_sector").select("key, label, description").order("label"),
-        supabase
-          .from("pro_category")
-          .select("key, label, description, sector_key")
-          .order("sector_key, label"),
-      ]);
-
-    if (sectorsError || categoriesError) {
-      console.error("Erreur lors de la récupération des données PRO:", {
-        sectorsError,
-        categoriesError,
-      });
+    if (sectorsError) {
+      console.error("Erreur lors de la récupération des secteurs:", sectorsError);
       return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
     }
 
-    // Grouper les catégories par secteur
-    const sectorsWithCategories =
+    // Réorganiser les données pour faciliter l'usage côté client
+    const formattedData =
       sectors?.map((sector) => ({
-        ...sector,
-        categories: categories?.filter((cat) => cat.sector_key === sector.key) || [],
+        key: sector.key,
+        label: sector.label,
+        description: sector.description,
+        categories: sector.pro_category || [],
       })) || [];
 
     return NextResponse.json({
-      sectors: sectorsWithCategories,
-      allCategories: categories,
+      sectors: formattedData,
+      lastUpdated: new Date().toISOString(),
     });
   } catch (error) {
     console.error("Erreur dans GET /api/pro-data:", error);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }
+
+// Protection de la route (accessible aux non-authentifiés pour l'inscription)
+export const GET = withApiProtection(getProData);

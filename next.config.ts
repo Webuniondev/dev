@@ -5,6 +5,15 @@ const nextConfig: NextConfig = {
   images: {
     // Active AVIF puis WebP (ordre de préférence)
     formats: ["image/avif", "image/webp"],
+    // Domaines autorisés pour next/image
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+        port: "",
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
   },
 };
 

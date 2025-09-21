@@ -1,7 +1,7 @@
 import "./globals.css";
 
 import type { Metadata } from "next";
-import { Caveat, Geist, Geist_Mono, Inter } from "next/font/google";
+import { Archivo_Black, Caveat, Geist, Geist_Mono, Inter } from "next/font/google";
 
 import { AuthGateway } from "@/components/auth-gateway";
 import { AuthWelcomeListener } from "@/components/auth-welcome-listener";
@@ -30,6 +30,12 @@ const caveat = Caveat({
   variable: "--font-caveat",
   subsets: ["latin"],
   weight: ["400", "700"],
+});
+
+const archivoBlack = Archivo_Black({
+  variable: "--font-archivo-black",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -88,7 +94,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${caveat.variable} font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${caveat.variable} ${archivoBlack.variable} font-sans antialiased`}
       >
         <SentryInit />
         <AppProviders>

@@ -1,4 +1,5 @@
 import { withApiProtection } from "@/lib/api-security";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import { supabaseServer } from "@/lib/supabase/server";
 
 async function getUserStats() {
@@ -23,26 +24,29 @@ async function getUserStats() {
       return Response.json({ error: "Accès non autorisé" }, { status: 403 });
     }
 
+    // Utiliser le client admin pour accéder à tous les utilisateurs
+    const admin = supabaseAdmin();
+
     // Récupérer les statistiques
     const [totalUsersResult, activeUsersResult, proUsersResult, adminUsersResult] =
       await Promise.all([
         // Total utilisateurs
-        supabase.from("user_profile").select("user_id", { count: "exact", head: true }),
+        admin.from("user_profile").select("user_id", { count: "exact", head: true }),
 
         // Utilisateurs actifs (connectés dans les 30 derniers jours)
-        supabase
+        admin
           .from("user_profile")
           .select("user_id", { count: "exact", head: true })
           .gte("updated_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
 
         // Utilisateurs PRO
-        supabase
+        admin
           .from("user_profile")
           .select("user_id", { count: "exact", head: true })
           .eq("role_key", "pro"),
 
         // Administrateurs
-        supabase
+        admin
           .from("user_profile")
           .select("user_id", { count: "exact", head: true })
           .eq("role_key", "admin"),

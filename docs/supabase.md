@@ -160,7 +160,7 @@ Fichiers de migration:
 - `supabase/migrations/20250921_pro_profile.sql` (tables + triggers + RPC)
 - `supabase/migrations/20250921_pro_profile_seeds.sql` (données d'exemple)
 
-RPC associée: `become_professional(category_key, sector_key)` → transformation atomique user → pro
+Création directe: Insertion directe dans `user_profile` (role_key='pro') + `pro_profile`
 
 ### Schéma Zod associé
 
@@ -368,3 +368,124 @@ Création sécurisée d'un utilisateur administrateur avec validation complète 
 - **Formulaire** : Validation temps réel
 - **UX** : Messages succès/erreur, fermeture auto
 - **Intégration** : Bouton dans page `/administration/utilisateurs`
+
+## Système d'inscription utilisateur/professionnel
+
+### Fonctionnalité
+
+Inscription unifiée permettant aux utilisateurs de choisir entre un compte particulier ou professionnel dès l'inscription, avec formulaires adaptés et création de profil complète.
+
+### Architecture du flux
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Choix type    │ -> │   Formulaire     │ -> │    Succès       │
+│  ☐ Particulier  │    │    adapté        │    │                 │
+│  ☐ Professionnel│    │                  │    │                 │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
+### Composants UI
+
+#### `AccountTypeSelector`
+
+Sélecteur de type de compte avec design cards :
+
+- **Particulier** : Icône User, recherche de professionnels
+- **Professionnel** : Icône Briefcase, proposition de services
+
+#### `UserRegistrationForm`
+
+Formulaire simplifié pour particuliers :
+
+- Champs de base : nom, prénom, email, mot de passe
+- Téléphone optionnel
+- Validation Zod côté client et serveur
+
+#### `ProRegistrationForm`
+
+Formulaire complet pour professionnels :
+
+- Champs de base + champs métier
+- Sélection secteur/catégorie dynamique
+- Informations business : nom entreprise, expérience, description
+- Validation cohérence secteur ↔ catégorie
+
+#### `RegistrationSuccess`
+
+Page de confirmation avec actions :
+
+- Message adapté au type de compte
+- Boutons vers connexion et accueil
+- Info spéciale pour les professionnels
+
+### APIs
+
+#### `GET /api/pro-data`
+
+Récupération des secteurs et catégories pour l'inscription PRO :
+
+```typescript
+{
+  sectors: [{
+    key: string,
+    label: string,
+    description?: string,
+    categories: ProCategory[]
+  }]
+}
+```
+
+#### `POST /api/register`
+
+API unifiée d'inscription avec schéma discriminant :
+
+```typescript
+// Type particulier
+{
+  account_type: "user",
+  email, password, first_name, last_name,
+  phone_number?, department_code?, address?, city?, postal_code?
+}
+
+// Type professionnel
+{
+  account_type: "pro",
+  email, password, first_name, last_name,
+  category_key, sector_key, business_name?, description?, experience_years?,
+  phone_number?, department_code?, address?, city?, postal_code?
+}
+```
+
+### Logique backend
+
+#### Inscription particulier
+
+1. Création utilisateur auth (`createUser`)
+2. Création profil avec `role_key = 'user'`
+3. Retour succès avec données utilisateur
+
+#### Inscription professionnel
+
+1. Création utilisateur auth (`createUser`)
+2. Création `user_profile` avec `role_key='pro'`
+3. Création `pro_profile` avec secteur/catégorie
+4. Retour succès avec données PRO
+
+### Sécurité
+
+- **Client admin** : Utilisation `supabaseAdmin()` pour création
+- **Validation** : Schémas Zod stricts côté API
+- **Unicité email** : Vérification via `listUsers()`
+- **Transaction atomique** : Rollback automatique si erreur
+- **Cohérence métier** : Validation secteur ↔ catégorie
+
+### Données de référence
+
+Migration `20250922_pro_data_seeds.sql` avec secteurs de base :
+
+- **Services** : Ménage, jardinage, garde d'enfants, cours
+- **Artisanat** : Couture, menuiserie, bijouterie, poterie
+- **Bâtiment** : Plomberie, électricité, peinture, carrelage
+- **Digital** : Développement web, design, marketing, photo
+- **Santé & Bien-être** : Massage, coaching, fitness, nutrition

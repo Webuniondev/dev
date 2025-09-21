@@ -1,36 +1,49 @@
+"use client";
+
 import { ArrowLeft } from "lucide-react";
-import { cookies } from "next/headers";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useState } from "react";
 
+import { AccountTypeSelector } from "@/components/account-type-selector";
+import { ProRegistrationMultiStep } from "@/components/pro-registration-multi-step";
+import { RegistrationSuccess } from "@/components/registration-success";
 import { BackgroundBeams } from "@/components/ui/background-beams";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { supabaseServer } from "@/lib/supabase/server";
+import { UserRegistrationMultiStep } from "@/components/user-registration-multi-step";
 
-export default async function RegisterPage() {
-  const supabaseForCheck = await supabaseServer({ readOnly: true });
-  const {
-    data: { user: existingUser },
-  } = await supabaseForCheck.auth.getUser();
-  if (existingUser) {
-    const cookieStore = await cookies();
-    cookieStore.set({ name: "welcome", value: "1", path: "/", maxAge: 15 });
-    redirect("/mon-espace");
-  }
+type RegistrationStep = "select-type" | "user-form" | "pro-form" | "success";
 
-  async function signUp(formData: FormData) {
-    "use server";
-    const email = String(formData.get("email") || "");
-    const password = String(formData.get("password") || "");
-    const supabase = await supabaseServer();
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      redirect(`/register?error=${encodeURIComponent("Impossible de créer le compte")}`);
+export default function RegisterPage() {
+  const [step, setStep] = useState<RegistrationStep>("select-type");
+  const [accountType, setAccountType] = useState<"user" | "pro" | null>(null);
+
+  const handleTypeSelect = (type: "user" | "pro") => {
+    setAccountType(type);
+    setStep(type === "user" ? "user-form" : "pro-form");
+  };
+
+  const handleBack = () => {
+    setStep("select-type");
+    setAccountType(null);
+  };
+
+  const handleSuccess = () => {
+    setStep("success");
+  };
+
+  const renderStep = () => {
+    switch (step) {
+      case "select-type":
+        return <AccountTypeSelector onSelect={handleTypeSelect} />;
+      case "user-form":
+        return <UserRegistrationMultiStep onBack={handleBack} onSuccess={handleSuccess} />;
+      case "pro-form":
+        return <ProRegistrationMultiStep onBack={handleBack} onSuccess={handleSuccess} />;
+      case "success":
+        return <RegistrationSuccess accountType={accountType!} />;
+      default:
+        return <AccountTypeSelector onSelect={handleTypeSelect} />;
     }
-    redirect("/mon-espace");
-  }
+  };
 
   return (
     <main className="min-h-dvh relative overflow-hidden flex items-center">
@@ -39,78 +52,55 @@ export default async function RegisterPage() {
         <BackgroundBeams />
       </div>
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="mx-auto w-full max-w-md rounded-2xl bg-white/5 p-6 sm:p-8 backdrop-blur-md">
-          <div className="mb-3">
-            <Link href="/" className="inline-flex items-center gap-2 text-white text-sm">
-              <ArrowLeft className="size-4" />
-              Retour à l&apos;accueil
-            </Link>
-          </div>
-          <div className="text-center">
-            <div className="mx-auto mb-3 inline-flex h-9 w-9 items-center justify-center rounded-md bg-white text-black font-bold">
-              A
+        <div className="mx-auto w-full max-w-md lg:max-w-xl xl:max-w-2xl rounded-2xl bg-white/5 p-6 sm:p-8 backdrop-blur-md">
+          {step !== "success" && (
+            <div className="mb-6">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 text-white text-sm hover:text-white/80 transition-colors"
+              >
+                <ArrowLeft className="size-4" />
+                Retour à l&apos;accueil
+              </Link>
             </div>
-            <p className="text-white/80 text-sm">Ourspace</p>
-            <h1 className="mt-2 text-3xl sm:text-4xl font-caveat font-bold text-white">
-              <span className="inline-block">
-                Créez votre compte
-                <span aria-hidden className="block mx-auto mt-2 w-1/2">
-                  <svg className="w-full h-[4px]" viewBox="0 0 100 4" preserveAspectRatio="none">
-                    <path
-                      d="M0 2 Q 25 0 50 2 T 100 2"
-                      stroke="white"
-                      strokeWidth="4"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+          )}
+
+          {step === "select-type" && (
+            <div className="text-center mb-6">
+              <div className="mx-auto mb-3 inline-flex h-9 w-9 items-center justify-center rounded-md bg-white text-black font-bold">
+                O
+              </div>
+              <p className="text-white/80 text-sm">Ourspace</p>
+              <h1 className="mt-2 text-3xl sm:text-4xl font-caveat font-bold text-white">
+                <span className="inline-block">
+                  Rejoignez-nous
+                  <span aria-hidden className="block mx-auto mt-2 w-1/2">
+                    <svg className="w-full h-[4px]" viewBox="0 0 100 4" preserveAspectRatio="none">
+                      <path
+                        d="M0 2 Q 25 0 50 2 T 100 2"
+                        stroke="white"
+                        strokeWidth="4"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
                 </span>
-              </span>
-            </h1>
-          </div>
-
-          <form action={signUp} className="mt-6 space-y-4">
-            <div className="grid grid-cols-1 gap-3">
-              <div className="space-y-1">
-                <Label htmlFor="email" className="text-white">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="vous@domaine.com"
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="password" className="text-white">
-                  Mot de passe
-                </Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete="new-password"
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
-                />
-              </div>
+              </h1>
             </div>
-            <Button type="submit" className="w-full">
-              S&apos;inscrire
-            </Button>
-          </form>
+          )}
 
-          <div className="mt-4 text-center text-white/80 text-sm">
-            Déjà un compte ?{" "}
-            <Link href="/login" className="font-semibold hover:text-white">
-              connectez-vous
-            </Link>
-          </div>
+          {renderStep()}
+
+          {step !== "success" && (
+            <div className="mt-6 text-center text-white/80 text-sm">
+              Déjà un compte ?{" "}
+              <Link href="/login" className="font-semibold hover:text-white transition-colors">
+                connectez-vous
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </main>

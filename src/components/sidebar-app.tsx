@@ -24,7 +24,7 @@ export function SidebarApp({
       className={`${mobile ? "flex" : "hidden sm:flex"} w-64 flex-col h-full bg-slate-900 text-slate-100`}
     >
       <div className="h-14 flex items-center border-b border-slate-800 px-4 text-sm uppercase tracking-wide flex-shrink-0">
-        <Link href="/" className="font-semibold hover:underline">
+        <Link href="/" className="font-archivo-black hover:underline">
           OURSPACE
         </Link>
       </div>

@@ -52,7 +52,7 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 h-16 w-full border-b bg-black text-white">
       <div className="container mx-auto flex h-full items-center justify-between px-4 sm:px-6">
-        <div className="text-3xl sm:text-4xl font-caveat font-bold">OURSPACE</div>
+        <div className="text-lg sm:text-2xl font-archivo-black">OURSPACE</div>
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger className="rounded-full p-2 bg-white text-black hover:bg-white/90">

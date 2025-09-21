@@ -18,26 +18,37 @@ npm run dev
 - Sentry côté client/serveur/edge (`sentry.*.config.ts`) + tunnel `/api/monitoring`.
 - React Query provider (`src/app/providers.tsx`) monté dans `app/layout.tsx`.
 - Zod installé + exemples de schémas (`src/lib/validation/user.ts`).
-- Exemple d’API validée `POST /api/echo` avec Zod.
 - Supabase SDK configuré: `src/lib/supabase/{client,server,admin}.ts`.
-- ESLint + Prettier + tri d’imports, scripts `npm run lint` et `npm run format`.
+- **Système d'administration complet** avec interface dark et gestion utilisateurs.
+- **Authentification et autorisation** avec rôles (user/pro/admin) et RLS.
+- **APIs sécurisées** avec protection middleware et validation Zod.
+- **Profils utilisateurs PRO** avec catégories et secteurs d'activité.
+- **Gestion des départements français** avec sélection par référence.
+- **Hooks de sécurité** (`useSecureFetch`) pour requêtes client sécurisées.
+- ESLint + Prettier + tri d'imports, scripts `npm run lint` et `npm run format`.
 
-### Journal de mise en place — 16/09/2025
+### Journal de mise en place
+
+#### Phase 1 — 16/09/2025 : Base technique
 
 - Mise en place Next.js App Router + TypeScript + Tailwind v4; base dans `src/app/globals.css`.
 - Ajout de shadcn/ui + Radix; création des composants de base dans `src/components/ui/*`.
 - Configuration CSP via `src/middleware.ts` (dev permissif, prod strict) avec domaine Sentry autorisé.
 - Intégration Sentry (client/serveur/edge) avec tunnel `/api/monitoring`; init dans `src/app/sentry-init.tsx`, configs `sentry.*.config.ts`.
 - Ajout du provider React Query dans `src/app/providers.tsx` et montage dans `src/app/layout.tsx`.
-- Installation de Zod et ajout d’un schéma d’exemple `src/lib/validation/user.ts`.
-- Exemple de route d’API validée `POST /api/echo` (`src/app/api/echo/route.ts`).
+- Installation de Zod et ajout d'un schéma d'exemple `src/lib/validation/user.ts`.
 - Configuration du SDK Supabase (`src/lib/supabase/{client,server,admin}.ts`).
-- Ajout d’`src/instrumentation.ts` pour l’instrumentation côté serveur.
-- Mise en place ESLint/Prettier et tri des imports (`eslint.config.mjs`) + scripts NPM.
-- Documentation initiale mise à jour (`README.md`, `docs/supabase.md`).
-- Garde‑fous sécurité: secrets uniquement côté serveur, validation systématique avec Zod, CSP stricte en prod.
 
-- Non fait hier mais planifié: policies RLS, intégration Stripe (webhook + Customer Portal), store Zustand d’exemple, pages d’erreur/fallbacks, base de tests + CI, bundle analyzer, `.env.local.example`.
+#### Phase 2 — 21-22/09/2025 : Système complet
+
+- **Base de données** : Migrations Supabase avec RLS et policies sécurisées.
+- **Authentification** : Système de rôles (user/pro/admin) avec vérifications.
+- **Administration** : Interface complète de gestion utilisateurs avec dark theme.
+- **APIs sécurisées** : Routes protégées avec middleware et validation Zod.
+- **Profils PRO** : Tables spécialisées avec catégories et secteurs d'activité.
+- **Géolocalisation** : Intégration départements français avec sélection référentielle.
+- **Sécurité avancée** : Hooks `useSecureFetch`, protection CSRF, validation origine.
+- **Interface moderne** : Composants minimalistes, responsive, optimisés performance.
 
 ### Variables d’environnement (.env.local)
 
@@ -130,17 +141,27 @@ with check (auth.uid() = owner);
 - Tests de policies RLS (lecture/écriture anonymes vs authentifiés).
 - Tests d’intégration sur Route Handlers avec Zod et Supabase mock/stub si besoin.
 
-### À faire (extrait de `doc.txt`)
+### Prochaines étapes
 
-- Configurer Supabase SDK (client/server) et documenter RLS/policies.
-- Définir RLS et policies minimales.
-- Configurer Stripe SDK, Customer Portal et webhooks (signature vérifiée).
-- Mettre un store Zustand d’exemple.
-- Optimiser les images avec `next/image` (WebP/AVIF, tailles).
-- Ajouter pages d’erreur/fallbacks (`app/error.tsx`, `app/not-found.tsx`) + Suspense.
-- Ajouter la base de tests (Jest/RTL/MSW).
-- Ajouter CI basique (lint + test) et `@next/bundle-analyzer`.
-- Préparer `.env.local.example` et tenir `README/status.md` à jour.
+#### Intégrations tierces
+
+- **Stripe** : SDK, Customer Portal et webhooks (signature vérifiée).
+- **Google Maps** : API pour autocomplétion d'adresses (déjà préparé en DB).
+- **Email** : Service d'envoi transactionnel (notifications, invitations).
+
+#### Fonctionnalités métier
+
+- **Recherche pro/client** : Algorithme de mise en relation intelligent.
+- **Messagerie** : Communication sécurisée entre pros et clients.
+- **Évaluations** : Système de notes et avis.
+- **Calendrier** : Gestion de disponibilités et rendez-vous.
+
+#### Technique
+
+- **Tests** : Base Jest/RTL/MSW avec coverage.
+- **Performance** : Optimisations images, cache, bundle analyzer.
+- **Monitoring** : Logs détaillés, métriques, alertes.
+- **CI/CD** : Pipeline déploiement automatisé.
 
 ### Liens utiles
 

@@ -1,23 +1,41 @@
 ## Statut du projet
 
-Dernière mise à jour: 17/09/2025
+Dernière mise à jour: 22/09/2025
 
 ### État actuel
 
-- Base Next.js (App Router) + TS + Tailwind v4 + shadcn/ui: OK
-- Sécurité: CSP middleware (dev permissif, prod strict) + Sentry tunnel: OK
-- Données: Supabase SDK (browser/server/admin): OK — CSP autorise l’origine Supabase
-- Validation: Zod aux frontières API: OK (ex: `POST /api/echo`)
-- Client: React Query provider + exemple Zustand: OK
-- Opérations: CI (lint + build) + bundle analyzer: OK
-- Pages d’erreur/fallbacks: OK
+- **Base technique**: Next.js (App Router) + TS + Tailwind v4 + shadcn/ui: ✅ OK
+- **Sécurité**: CSP middleware + Sentry + API protection: ✅ OK
+- **Base de données**: Supabase avec RLS, policies et migrations: ✅ OK
+- **Authentification**: Système de rôles complet (user/pro/admin): ✅ OK
+- **Administration**: Interface complète de gestion utilisateurs: ✅ OK
+- **Profils PRO**: Tables spécialisées avec catégories/secteurs: ✅ OK
+- **Géolocalisation**: Départements français intégrés: ✅ OK
+- **APIs sécurisées**: Routes protégées avec validation Zod: ✅ OK
+- **Hooks sécurisés**: `useSecureFetch` pour requêtes client: ✅ OK
+- **Interface moderne**: Dark theme, responsive, optimisé: ✅ OK
 
 ### À faire (prochaines étapes)
 
-- Définir tables et policies RLS (least‑privilege) et versionner les migrations
-- Ajouter base de tests (Jest + RTL + MSW) et coverage minimal
-- Intégration Stripe (webhooks signés + Customer Portal) [à planifier]
-- Budgets de bundle et alertes analyzer (seuils gzip)
+#### Priorité 1 - Fonctionnalités métier
+
+- **Recherche/mise en relation**: Algorithme intelligent pro ↔ client
+- **Google Maps**: API autocomplétion adresses (structure DB prête)
+- **Messagerie**: Communication sécurisée entre utilisateurs
+- **Évaluations**: Système d'avis et de notation
+
+#### Priorité 2 - Intégrations
+
+- **Stripe**: Paiements, abonnements PRO, webhooks signés
+- **Email**: Service transactionnel (notifications, invitations)
+- **Upload fichiers**: Images profil, documents, galeries
+
+#### Priorité 3 - Technique
+
+- **Tests**: Jest + RTL + MSW avec coverage >80%
+- **Performance**: Bundle analyzer, optimisations images
+- **Monitoring**: Logs détaillés, métriques, alertes
+- **CI/CD**: Pipeline déploiement automatisé
 
 ### Budgets de bundle (enforcés en CI)
 

@@ -6,6 +6,7 @@ Polices installées
 - Caveat (Google): variable CSS --font-caveat (poids 400, 700)
 - Geist Sans, Geist Mono (Next): --font-geist-sans, --font-geist-mono
 - Inter (Google): --font-inter
+- Archivo Black (Google): --font-archivo-black (poids 400) - utilisée pour le logo
 
 Intégration (layout)
 - Déclarées dans src/app/layout.tsx via next/font/google, exposées comme variables CSS, incluses sur <body>.
@@ -13,9 +14,11 @@ Intégration (layout)
 Classes utilitaires Tailwind
 - .font-inter → var(--font-inter)
 - .font-caveat → var(--font-caveat)
+- .font-archivo-black → var(--font-archivo-black)
 
-Exemple d’usage (JSX)
+Exemple d'usage (JSX)
 <Example>
+  <div className="text-4xl font-archivo-black">OURSPACE</div>
   <h1 className="text-2xl font-caveat">Titre manuscrit (Caveat)</h1>
   <p className="font-inter">Paragraphe en Inter.</p>
 </Example>
