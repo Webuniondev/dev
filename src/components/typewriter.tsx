@@ -31,8 +31,7 @@ export function Typewriter({
   const previousNodes = useMemo(() => {
     return words.slice(0, index).map((w, i) => (
       <span key={`prev-${i}`} className={w.className}>
-        {w.text}
-        {" "}
+        {w.text}{" "}
       </span>
     ));
   }, [index, words]);
@@ -58,11 +57,14 @@ export function Typewriter({
   }, [count, current.text.length, holdMs, index, msPerChar, words.length]);
 
   const cursor = showCursor ? (
-    <span className={cursorClassName ?? "ml-0.5 inline-block w-px bg-foreground animate-pulse"} aria-hidden />
+    <span
+      className={cursorClassName ?? "ml-0.5 inline-block w-px bg-foreground animate-pulse"}
+      aria-hidden
+    />
   ) : null;
 
   return (
-    <div className={className} aria-label={words.map((w) => w.text).join(" ")}> 
+    <div className={className} aria-label={words.map((w) => w.text).join(" ")}>
       {/* Accessible full text for SEO via aria-label */}
       {previousNodes}
       <span className={current.className}>{current.text.slice(0, count)}</span>
@@ -70,5 +72,3 @@ export function Typewriter({
     </div>
   );
 }
-
-

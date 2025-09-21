@@ -50,12 +50,12 @@ export async function SiteHeader() {
   }
 
   return (
-    <header className="h-14 w-full border-b bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+    <header className="sticky top-0 z-50 h-16 w-full border-b bg-black text-white">
       <div className="container mx-auto flex h-full items-center justify-between px-4 sm:px-6">
-        <div className="text-2xl font-caveat font-bold">OURSPACE</div>
+        <div className="text-3xl sm:text-4xl font-caveat font-bold">OURSPACE</div>
         {user ? (
           <DropdownMenu>
-            <DropdownMenuTrigger className="rounded-full p-2 hover:bg-slate-100">
+            <DropdownMenuTrigger className="rounded-full p-2 bg-white text-black hover:bg-white/90">
               <UserIcon className="size-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-72 p-0">
@@ -125,7 +125,10 @@ export async function SiteHeader() {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Link href="/login" className="rounded-md border px-3 py-1.5 text-sm hover:bg-slate-50">
+          <Link
+            href="/login"
+            className="rounded-lg bg-white text-black px-4 py-2 text-base font-semibold hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/10"
+          >
             Se connecter
           </Link>
         )}

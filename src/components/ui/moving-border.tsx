@@ -1,6 +1,12 @@
 "use client";
 
-import { motion, useAnimationFrame, useMotionTemplate, useMotionValue, useTransform } from "motion/react";
+import {
+  motion,
+  useAnimationFrame,
+  useMotionTemplate,
+  useMotionValue,
+  useTransform,
+} from "motion/react";
 import { useRef } from "react";
 
 import { cn } from "@/lib/utils";
@@ -12,7 +18,13 @@ type MovingBorderProps = {
   ry?: string;
 };
 
-export function MovingBorder({ children, duration = 3000, rx, ry, ...otherProps }: MovingBorderProps) {
+export function MovingBorder({
+  children,
+  duration = 3000,
+  rx,
+  ry,
+  ...otherProps
+}: MovingBorderProps) {
   const pathRef = useRef<SVGRectElement | null>(null);
   const progress = useMotionValue<number>(0);
 
@@ -72,7 +84,10 @@ export function MovingBorderButton({
 }: ButtonProps & Record<string, unknown>) {
   return (
     <Component
-      className={cn("relative inline-flex h-16 w-auto overflow-hidden bg-transparent p-[1px] text-xl", containerClassName)}
+      className={cn(
+        "relative inline-flex h-16 w-auto overflow-hidden bg-transparent p-[1px] text-xl",
+        containerClassName,
+      )}
       style={{ borderRadius: borderRadius }}
       {...otherProps}
     >
@@ -99,5 +114,3 @@ export function MovingBorderButton({
     </Component>
   );
 }
-
-

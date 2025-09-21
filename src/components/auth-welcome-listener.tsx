@@ -1,9 +1,10 @@
 "use client";
 
-import { supabaseBrowser } from "@/lib/supabase/client";
-import { useAuthStore } from "@/lib/store/auth";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+
+import { useAuthStore } from "@/lib/store/auth";
+import { supabaseBrowser } from "@/lib/supabase/client";
 
 export function AuthWelcomeListener() {
   const displayName = useAuthStore((s) => s.displayName);
@@ -60,5 +61,3 @@ export function AuthWelcomeListener() {
 
   return null;
 }
-
-

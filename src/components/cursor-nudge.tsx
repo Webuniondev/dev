@@ -18,5 +18,3 @@ export function CursorNudge({ className }: Props) {
     </motion.div>
   );
 }
-
-

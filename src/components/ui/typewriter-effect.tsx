@@ -50,13 +50,21 @@ export function TypewriterEffect({
   );
 
   return (
-    <div className={cn("text-base sm:text-xl md:text-3xl lg:text-5xl font-bold text-center", className)}>
+    <div
+      className={cn(
+        "text-base sm:text-xl md:text-3xl lg:text-5xl font-bold text-center",
+        className,
+      )}
+    >
       {renderWords()}
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
-        className={cn("inline-block rounded-sm w-[4px] h-4 md:h-6 lg:h-10 bg-blue-500", cursorClassName)}
+        className={cn(
+          "inline-block rounded-sm w-[4px] h-4 md:h-6 lg:h-10 bg-blue-500",
+          cursorClassName,
+        )}
       />
     </div>
   );
@@ -78,7 +86,10 @@ export function TypewriterEffectSmooth({
       {wordsArray.map((word, idx) => (
         <div key={`word-${idx}`} className="inline-block">
           {word.text.map((char, index) => (
-            <span key={`char-${index}`} className={cn("dark:text-white text-black ", word.className)}>
+            <span
+              key={`char-${index}`}
+              className={cn("dark:text-white text-black ", word.className)}
+            >
               {char}
             </span>
           ))}
@@ -100,7 +111,7 @@ export function TypewriterEffectSmooth({
           className="text-xs sm:text-base md:text-xl lg:text:3xl xl:text-5xl font-bold"
           style={{ whiteSpace: "nowrap" }}
         >
-          {renderWords()} {" "}
+          {renderWords()}{" "}
         </div>{" "}
       </motion.div>
       <motion.span
@@ -112,5 +123,3 @@ export function TypewriterEffectSmooth({
     </div>
   );
 }
-
-

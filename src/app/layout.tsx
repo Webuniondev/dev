@@ -1,14 +1,15 @@
+import "./globals.css";
+
 import type { Metadata } from "next";
 import { Caveat, Geist, Geist_Mono, Inter } from "next/font/google";
 
-import { AuthWelcomeListener } from "@/components/auth-welcome-listener";
 import { AuthGateway } from "@/components/auth-gateway";
+import { AuthWelcomeListener } from "@/components/auth-welcome-listener";
 import { ToasterSonner } from "@/components/sonner-toaster";
 import { supabaseServer } from "@/lib/supabase/server";
 
 import { AppProviders } from "./providers";
 import { SentryInit } from "./sentry-init";
-import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${caveat.variable} font-sans antialiased`}
       >
