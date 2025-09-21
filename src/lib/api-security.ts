@@ -8,14 +8,23 @@ export function validateApiRequest(request: NextRequest): { isValid: boolean; er
   if (request.method === "GET") {
     const userAgent = request.headers.get("user-agent") || "";
     const referer = request.headers.get("referer") || "";
+    const currentOrigin = request.nextUrl.origin;
 
     // Détecter les navigateurs populaires dans l'User-Agent
     const browserPatterns = [/Mozilla/, /Chrome/, /Safari/, /Firefox/, /Edge/, /Opera/];
-
     const isBrowser = browserPatterns.some((pattern) => pattern.test(userAgent));
 
-    // Si c'est un navigateur ET qu'il n'y a pas de referer de notre domaine
-    if (isBrowser && !referer.includes(process.env.NEXT_PUBLIC_SITE_URL || "localhost")) {
+    const allowedOrigins = [
+      currentOrigin,
+      process.env.NEXT_PUBLIC_SITE_URL || "",
+      "http://localhost",
+      "https://localhost",
+    ].filter(Boolean);
+
+    const isAllowedReferer = allowedOrigins.some((origin) => referer.startsWith(origin));
+
+    // Si c'est un navigateur ET que le referer ne correspond pas à l'origine courante/autorisé
+    if (isBrowser && !isAllowedReferer) {
       return {
         isValid: false,
         error: "Accès direct non autorisé",
