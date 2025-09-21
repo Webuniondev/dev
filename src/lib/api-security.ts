@@ -43,14 +43,16 @@ export function validateApiRequest(request: NextRequest): { isValid: boolean; er
 
   // 3. Vérifier l'origine pour les requêtes POST/PUT/DELETE
   if (["POST", "PUT", "DELETE", "PATCH"].includes(request.method)) {
-    const origin = request.headers.get("origin");
+    const origin = request.headers.get("origin") || "";
+    const currentOrigin = request.nextUrl.origin;
     const allowedOrigins = [
-      process.env.NEXT_PUBLIC_SITE_URL,
+      currentOrigin,
+      process.env.NEXT_PUBLIC_SITE_URL || "",
       "http://localhost:3000",
       "https://localhost:3000",
     ].filter(Boolean);
 
-    if (!origin || !allowedOrigins.some((allowed) => origin.startsWith(allowed as string))) {
+    if (!allowedOrigins.some((allowed) => origin.startsWith(allowed))) {
       return {
         isValid: false,
         error: "Origine non autorisée",
