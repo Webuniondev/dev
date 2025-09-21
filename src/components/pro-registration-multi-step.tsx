@@ -189,7 +189,17 @@ export function ProRegistrationMultiStep({ onBack, onSuccess }: ProRegistrationM
     return errors.length === 0;
   };
 
-  // Plus de vérification automatique: on vérifie au clic sur "Suivant"
+  // Vérification automatique de l'email (debounce) pour activer le bouton "Suivant"
+  useEffect(() => {
+    if (!formData.email) {
+      setEmailAvailable(null);
+      return;
+    }
+    const t = setTimeout(() => {
+      checkEmailAvailability(formData.email);
+    }, 400);
+    return () => clearTimeout(t);
+  }, [formData.email, checkEmailAvailability]);
 
   const nextStep = () => {
     if (currentStep === 1) {
@@ -264,25 +274,7 @@ export function ProRegistrationMultiStep({ onBack, onSuccess }: ProRegistrationM
     }
   };
 
-  if (loadingData) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-3">
-          <button onClick={onBack} className="p-2 rounded-lg hover:bg-white/10 transition-colors">
-            <ArrowLeft className="size-4 text-white" />
-          </button>
-          <div>
-            <h2 className="text-xl font-bold text-white">Inscription Professionnelle</h2>
-            <p className="text-white/60 text-sm">Chargement des données...</p>
-          </div>
-        </div>
-        <div className="text-center text-white/60">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
-          <p className="mt-2">Chargement...</p>
-        </div>
-      </div>
-    );
-  }
+  // Ne bloque pas l'UI: on affiche l'étape 1 même si les référentiels chargent encore
 
   return (
     <div className="space-y-6">

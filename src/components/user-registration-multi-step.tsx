@@ -134,16 +134,19 @@ export function UserRegistrationMultiStep({ onBack, onSuccess }: UserRegistratio
     return errors.length === 0;
   };
 
-  // Vérification email uniquement au clic sur suivant
-
-  const nextStep = () => {
-    if (currentStep === 1) {
-      if (!formData.email || emailChecking) return;
-      checkEmailAvailability(formData.email).then(() => {
-        if (emailAvailable === true) setCurrentStep((prev) => prev + 1);
-      });
+  // Vérification automatique de l'email (debounce) pour activer le bouton "Suivant"
+  useEffect(() => {
+    if (!formData.email) {
+      setEmailAvailable(null);
       return;
     }
+    const t = setTimeout(() => {
+      checkEmailAvailability(formData.email);
+    }, 400);
+    return () => clearTimeout(t);
+  }, [formData.email, checkEmailAvailability]);
+
+  const nextStep = () => {
     if (currentStep < steps.length) setCurrentStep((prev) => prev + 1);
   };
 
