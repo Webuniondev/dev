@@ -29,6 +29,7 @@ Operational Concerns: Ensure code is production-ready, addressing:
 - Management: Use .env.local for configuration.
 - Monitoring: Integrate logging (e.g., Sentry for prod).
 - Maintenance: Write self-documenting code, update status.md, and run npm audit.
+- Documentation: ALWAYS update `docs/supabase.md` when creating/modifying Supabase migrations, API routes, or database schemas.
 - Secrets stay server-side (Server Actions/Route Handlers); never expose to the client.
 
 Coding Standards:
@@ -79,7 +80,13 @@ Backend and Database
 - Use Zod schemas to validate data exchanged with the backend.
 - Enable Row-Level Security (RLS) with strict, least-privilege policies.
 - Keep Supabase service role keys server-side only; never expose them to the client.
- - All Supabase development must follow the local docs in `web/docs/supabase.md` and version SQL under `web/supabase/migrations/`.
+- All Supabase development must follow the local docs in `docs/supabase.md` and version SQL under `supabase/migrations/`.
+- CRITICAL: When creating migrations, API routes, or database schemas, IMMEDIATELY update `docs/supabase.md` with the new structure, including:
+  - Table schemas and relationships
+  - API route descriptions and security measures
+  - Zod validation schemas
+  - RLS policies and business rules
+  - Migration file references
 
 Stripe Integration and Subscription Model
 

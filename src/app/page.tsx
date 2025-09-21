@@ -132,10 +132,10 @@ export default function Home() {
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "Ourspace",
-              url: "https://ourspace.example.com",
+              url: process.env.NEXT_PUBLIC_SITE_URL || "https://ourspace.fr",
               potentialAction: {
                 "@type": "SearchAction",
-                target: "https://ourspace.example.com/recherche?q={search_term_string}",
+                target: `${process.env.NEXT_PUBLIC_SITE_URL || "https://ourspace.fr"}/recherche?q={search_term_string}`,
                 "query-input": "required name=search_term_string",
               },
             }),
@@ -148,8 +148,11 @@ export default function Home() {
               "@context": "https://schema.org",
               "@type": "Organization",
               name: "Ourspace",
-              url: "https://ourspace.example.com",
-              logo: "https://ourspace.example.com/android-chrome-512x512.png",
+              url: process.env.NEXT_PUBLIC_SITE_URL || "https://ourspace.fr",
+              logo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://ourspace.fr"}/android-chrome-512x512.png`,
+              description:
+                "Plateforme de mise en relation entre particuliers et professionnels en France",
+              "@id": `${process.env.NEXT_PUBLIC_SITE_URL || "https://ourspace.fr"}/#organization`,
             }),
           }}
         />

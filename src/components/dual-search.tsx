@@ -50,11 +50,11 @@ export const DualSearch: React.FC<DualSearchProps> = ({
               className={cn(
                 "w-full pl-10 pr-4 rounded-md border text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                 isHero && "h-12 bg-white/90 backdrop-blur",
-                isSticky && "h-11 bg-white/95"
+                isSticky && "h-11 bg-white/95",
               )}
             />
           </div>
-          
+
           {/* Champ localisation */}
           <div className="relative">
             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -67,18 +67,18 @@ export const DualSearch: React.FC<DualSearchProps> = ({
               className={cn(
                 "w-full pl-10 pr-4 rounded-md border text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                 isHero && "h-12 bg-white/90 backdrop-blur",
-                isSticky && "h-11 bg-white/95"
+                isSticky && "h-11 bg-white/95",
               )}
             />
           </div>
-          
+
           {/* Bouton recherche */}
           <button
             type="submit"
             className={cn(
               "w-full rounded-md bg-primary text-primary-foreground font-medium transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
               isHero && "h-12 text-base",
-              isSticky && "h-11 text-sm"
+              isSticky && "h-11 text-sm",
             )}
           >
             Rechercher
@@ -99,11 +99,11 @@ export const DualSearch: React.FC<DualSearchProps> = ({
               className={cn(
                 "w-full pl-10 pr-4 rounded-md border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                 isHero && "h-14 text-base bg-white/90 backdrop-blur",
-                isSticky && "h-12 text-sm bg-white/95"
+                isSticky && "h-12 text-sm bg-white/95",
               )}
             />
           </div>
-          
+
           {/* Champ localisation - plus petit */}
           <div className="relative flex-1 min-w-[200px]">
             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -116,31 +116,33 @@ export const DualSearch: React.FC<DualSearchProps> = ({
               className={cn(
                 "w-full pl-10 pr-4 rounded-md border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                 isHero && "h-14 text-base bg-white/90 backdrop-blur",
-                isSticky && "h-12 text-sm bg-white/95"
+                isSticky && "h-12 text-sm bg-white/95",
               )}
             />
           </div>
-          
+
           {/* Bouton recherche */}
           <button
             type="submit"
             className={cn(
               "rounded-md bg-primary text-primary-foreground font-medium transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 whitespace-nowrap",
               isHero && "h-14 px-8 text-base",
-              isSticky && "h-12 px-6 text-sm"
+              isSticky && "h-12 px-6 text-sm",
             )}
           >
             Rechercher
           </button>
         </div>
       </form>
-      
+
       {/* Suggestions */}
-      <div className={cn(
-        "mt-2 text-muted-foreground text-left w-full",
-        isHero && "pl-1 sm:pl-2 text-xs sm:text-sm",
-        isSticky && "pl-1 sm:pl-2 text-xs"
-      )}>
+      <div
+        className={cn(
+          "mt-2 text-muted-foreground text-left w-full",
+          isHero && "pl-1 sm:pl-2 text-xs sm:text-sm",
+          isSticky && "pl-1 sm:pl-2 text-xs",
+        )}
+      >
         <span className="hidden sm:inline">Suggestions: </span>
         <span className="sm:hidden">Ex: </span>
         plombier, électricien, photographe, coach sportif…

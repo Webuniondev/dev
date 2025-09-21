@@ -60,15 +60,19 @@ Table: `public.user_profile`
 
 - Clé primaire: `user_id uuid` (FK `auth.users(id)`, cascade delete)
 - Champs: `last_name`, `first_name`, `address`, `postal_code`, `city`, `phone_number`, `created_at`, `updated_at`
+- **Nouveau:** `department_code char(3)` (FK `public.french_departments(code)`)
 - Contraintes: longueurs/regex sur `postal_code` et `phone_number`
-- Index: `city`, `postal_code`
+- Index: `city`, `postal_code`, `department_code`
 - Trigger: `updated_at` auto (UTC)
 - RLS: propriétaire seulement (select/insert/update où `auth.uid() = user_id`)
 - Rôle: colonne `role_key` (FK `public.user_role(key)`) défaut `user`
 - Avatar: `avatar_url text` (URL publique du bucket `avatars`)
 
-Fichier de migration: `supabase/migrations/20250917_user_profile.sql`
-Complément avatars: `supabase/migrations/20250918_user_avatar.sql`
+Fichiers de migration:
+
+- `supabase/migrations/20250917_user_profile.sql` (profil de base)
+- `supabase/migrations/20250918_user_avatar.sql` (avatars)
+- `supabase/migrations/20250922_user_department.sql` (départements)
 
 ## Schéma: user_role (liste blanche)
 
@@ -112,6 +116,145 @@ export const profileUpsertSchema = z.object({
 - Lors de l’upload, mettre à jour `public.user_profile.avatar_url` avec l’URL publique
 ```
 
+## Schéma: french_departments (référence géographique)
+
+Table: `public.french_departments`
+
+- Clé primaire: `code char(3)` (ex: "75", "2A", "971")
+- Champs: `name varchar(100)`, `region varchar(100)`
+- **101 départements** incluant métropole et outre-mer
+- RLS: lecture publique (données de référence)
+- Utilisée pour: validation des adresses utilisateurs
+
+Fichier de migration: `supabase/migrations/20250922_user_department.sql`
+
+Vue associée: `user_profiles_with_location` (jointure user_profile + department)
+RPC associée: `get_department_from_postal_code(postal_code text)` → code département
+
+## Schéma: pro_profile (utilisateurs professionnels)
+
+Tables professionnelles (pour `role_key = 'pro'` uniquement):
+
+### `public.pro_sector`
+
+- Clé primaire: `key varchar(50)` (ex: "services", "commerce")
+- Champs: `label varchar(100)`, `description text`
+- RLS: lecture publique
+
+### `public.pro_category`
+
+- Clé primaire: `key varchar(50)` (ex: "plomberie", "electricite")
+- Champs: `label varchar(100)`, `description text`, `sector_key varchar(50)` (FK pro_sector)
+- RLS: lecture publique
+
+### `public.pro_profile`
+
+- Clé primaire: `user_id uuid` (FK auth.users(id), FK user_profile(user_id))
+- Champs: `category_key varchar(50)` (FK pro_category), `sector_key varchar(50)` (FK pro_sector)
+- **Contraintes:** Obligatoires pour les utilisateurs PRO via triggers PostgreSQL
+- **Validation:** Cohérence category.sector_key = pro_profile.sector_key
+- RLS: propriétaire seulement
+
+Fichiers de migration:
+
+- `supabase/migrations/20250921_pro_profile.sql` (tables + triggers + RPC)
+- `supabase/migrations/20250921_pro_profile_seeds.sql` (données d'exemple)
+
+RPC associée: `become_professional(category_key, sector_key)` → transformation atomique user → pro
+
+### Schéma Zod associé
+
+Source: `src/lib/validation/user.ts`
+
+```ts
+// Schéma de base (mis à jour)
+export const profileUpsertSchema = z.object({
+  last_name: z.string().min(1).max(120),
+  first_name: z.string().min(1).max(120),
+  address: z
+    .string()
+    .max(400)
+    .optional()
+    .or(z.literal(""))
+    .transform((v) => (v === "" ? undefined : v)),
+  postal_code: z
+    .string()
+    .regex(/^[0-9A-Za-z\-\s]{3,12}$/)
+    .optional(),
+  city: z.string().max(160).optional(),
+  phone_number: z
+    .string()
+    .regex(/^[0-9+().\-\s]{5,20}$/)
+    .optional(),
+  avatar_url: z.string().url().max(2048).optional(),
+  department_code: z
+    .string()
+    .regex(/^[0-9A-B]{2,3}$/)
+    .optional(), // Nouveau
+});
+
+// Schémas PRO (nouveaux)
+export const proSectorSchema = z.object({
+  key: z.string().min(1).max(50),
+  label: z.string().min(1).max(100),
+  description: z.string().optional(),
+});
+
+export const proCategorySchema = z.object({
+  key: z.string().min(1).max(50),
+  label: z.string().min(1).max(100),
+  description: z.string().optional(),
+  sector_key: z.string().min(1).max(50),
+});
+
+export const proProfileCreateSchema = z.object({
+  category_key: z.string().min(1).max(50),
+  sector_key: z.string().min(1).max(50),
+});
+
+// Schémas départements (nouveaux)
+export const frenchDepartmentSchema = z.object({
+  code: z.string().regex(/^[0-9A-B]{2,3}$/),
+  name: z.string().min(1).max(100),
+  region: z.string().min(1).max(100),
+});
+```
+
+## API Routes créées
+
+### Administration
+
+- `GET /api/admin/user-stats` - Statistiques utilisateurs (admin uniquement)
+  - Métriques: total, actifs (30j), PRO, admins
+  - Sécurisée avec `withApiProtection`
+- `GET /api/admin/users` - Liste complète des utilisateurs avec pagination
+  - Paramètres: `page`, `limit`, `search`, `role`, `sortBy`, `sortOrder`
+  - Utilise la fonction RPC `admin_list_users()` pour accès sécurisé
+  - Retourne: utilisateurs + métadonnées pagination
+- `POST /api/admin/user-role` - Mise à jour du rôle utilisateur
+  - Corps: `{ userId: UUID, role_key: 'user'|'pro'|'admin' }`
+  - Utilise la fonction RPC `admin_update_user_role()` avec validations
+  - Protection: impossible de se rétrograder soi-même
+
+### Données professionnelles
+
+- `GET /api/pro-data` - Secteurs et catégories PRO
+- `GET|POST|PUT|DELETE /api/pro-profile` - CRUD profil PRO
+- `POST /api/become-pro` - Transformation atomique user → PRO
+
+### Données géographiques
+
+- `GET /api/departments` - Liste des départements français
+  - Regroupés par région, sécurisé admin
+
+## Sécurité API
+
+Middleware de protection: `src/lib/api-security.ts`
+
+- Validation Origin et headers `X-Requested-With`
+- Filtrage User-Agent malveillant
+- Hook client: `useSecureFetch` (ajout automatique headers)
+
 Correspondance champs ↔ colonnes table `public.user_profile`:
 
 - `last_name` ↔ `last_name`
@@ -121,3 +264,107 @@ Correspondance champs ↔ colonnes table `public.user_profile`:
 - `city` ↔ `city`
 - `phone_number` ↔ `phone_number`
 - `role_key` ↔ `role_key` (FK user_role)
+- `department_code` ↔ `department_code` (FK french_departments)
+
+## Gestion des utilisateurs (Administration)
+
+### Migration `20250922_admin_user_management.sql`
+
+#### Vue `admin_users_view`
+
+Vue sécurisée combinant `user_profile`, `auth.users` et `french_departments` pour l'administration.
+
+#### Fonctions RPC Admin
+
+##### `admin_list_users()`
+
+```sql
+admin_list_users(
+    page_num INTEGER DEFAULT 1,
+    page_size INTEGER DEFAULT 10,
+    search_term TEXT DEFAULT NULL,
+    role_filter TEXT DEFAULT NULL,
+    sort_by TEXT DEFAULT 'profile_created_at',
+    sort_order TEXT DEFAULT 'desc'
+)
+```
+
+- **Sécurité** : Vérification rôle admin obligatoire
+- **Retour** : Colonnes préfixées `result_*` pour éviter ambiguïtés de noms
+- **Pagination** : Ligne séparée avec `total_count` pour métadonnées
+- **Filtres** : Recherche ILIKE sur nom/prénom/email, filtre exact par rôle
+- **Tri** : Par date création ou nom avec direction ASC/DESC
+- **Correction v2** : Résolution conflit noms colonnes SQL/PL-pgSQL
+
+##### `admin_update_user_role()`
+
+```sql
+admin_update_user_role(
+    target_user_id UUID,
+    new_role_key TEXT ('user'|'pro'|'admin')
+)
+```
+
+- **Sécurité** : Vérification rôle admin, protection auto-rétrogradation
+- **Validations** : Rôle valide, utilisateur cible existe
+- **Retour** : JSON avec ancien/nouveau rôle et timestamp
+
+### Composants UI
+
+#### `UsersManagement` (`src/components/users-management.tsx`)
+
+Interface complète de gestion des utilisateurs:
+
+- **Recherche/Filtres** : Nom, email, rôle
+- **Pagination** : Navigation fluide
+- **Actions** : Changement de rôle en temps réel
+- **Affichage** : Infos utilisateur, statut, localisation
+- **Sécurité** : Toutes les requêtes via `useSecureFetch`
+
+#### APIs dédiées
+
+- `GET /api/admin/users` : Liste avec pagination/filtres
+- `POST /api/admin/user-role` : Modification de rôle
+- `POST /api/admin/create-admin` : Création d'administrateur
+- Toutes sécurisées avec `withApiProtection` + vérification admin
+
+## API `/api/admin/create-admin`
+
+### Fonctionnalité
+
+Création sécurisée d'un utilisateur administrateur avec validation complète et transaction atomique.
+
+### Sécurité
+
+- **Authentification** : Admin uniquement
+- **Validation** : Schéma Zod strict
+- **Unicité** : Vérification email via `listUsers()`
+- **Transaction** : Création auth + profil atomique
+- **Rollback** : Suppression auto en cas d'erreur
+
+### Schema de validation
+
+```typescript
+{
+  email: string (email valide),
+  password: string (min 8 caractères),
+  first_name: string (1-120 caractères),
+  last_name: string (1-120 caractères),
+  phone_number?: string (format international)
+}
+```
+
+### Processus de création
+
+1. Validation des données d'entrée
+2. Vérification unicité email
+3. Création utilisateur auth avec `createUser()`
+4. Création profil avec rôle `admin`
+5. Rollback automatique si erreur
+
+### Interface utilisateur
+
+- **Modal** : `CreateAdminModal` avec design dark
+- **Formulaire** : Validation temps réel
+- **UX** : Messages succès/erreur, fermeture auto
+- **Intégration** : Bouton dans page `/administration/utilisateurs`
