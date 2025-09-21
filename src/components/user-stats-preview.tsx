@@ -49,20 +49,7 @@ export function UserStatsPreview() {
     fetchStats();
   }, [secureGet]);
 
-  if (loading) {
-    return (
-      <div className="grid grid-cols-2 gap-3 text-sm">
-        <div className="p-3 rounded-lg animate-pulse" style={{ backgroundColor: "#0f0f0f" }}>
-          <div className="h-8 bg-gray-600 rounded mb-1"></div>
-          <div className="h-4 bg-gray-600 rounded"></div>
-        </div>
-        <div className="p-3 rounded-lg animate-pulse" style={{ backgroundColor: "#0f0f0f" }}>
-          <div className="h-8 bg-gray-600 rounded mb-1"></div>
-          <div className="h-4 bg-gray-600 rounded"></div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return null;
 
   if (error) {
     return (

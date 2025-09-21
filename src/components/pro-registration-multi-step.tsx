@@ -59,7 +59,6 @@ export function ProRegistrationMultiStep({ onBack, onSuccess }: ProRegistrationM
   const { secureGet, securePost } = useSecureFetch();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Données externes
@@ -118,7 +117,7 @@ export function ProRegistrationMultiStep({ onBack, onSuccess }: ProRegistrationM
         console.error("Erreur chargement données:", err);
         setError("Impossible de charger les données nécessaires");
       } finally {
-        setLoadingData(false);
+        // no-op
       }
     };
 
@@ -546,7 +545,7 @@ export function ProRegistrationMultiStep({ onBack, onSuccess }: ProRegistrationM
                 type="password"
                 value={formData.password}
                 onChange={(e) => updateFormData("password", e.target.value)}
-                placeholder="Minimum 7 caractères avec 1 chiffre"
+                placeholder="Minimum 8 caractères avec 1 chiffre"
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
               />
             </div>
@@ -570,15 +569,15 @@ export function ProRegistrationMultiStep({ onBack, onSuccess }: ProRegistrationM
             {formData.password && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  {formData.password.length >= 7 ? (
+                  {formData.password.length >= 8 ? (
                     <span className="text-green-400">✓</span>
                   ) : (
                     <span className="text-red-400">✗</span>
                   )}
                   <span
-                    className={formData.password.length >= 7 ? "text-green-400" : "text-white/70"}
+                    className={formData.password.length >= 8 ? "text-green-400" : "text-white/70"}
                   >
-                    Au moins 7 caractères
+                    Au moins 8 caractères
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">

@@ -240,7 +240,7 @@ export const frenchDepartmentSchema = z.object({
 
 - `GET /api/pro-data` - Secteurs et catégories PRO
 - `GET|POST|PUT|DELETE /api/pro-profile` - CRUD profil PRO
-- `POST /api/become-pro` - Transformation atomique user → PRO
+- (Supprimé) `POST /api/become-pro` - remplacé par l’API d’inscription `/api/register` (création simplifiée en 3 étapes)
 
 ### Données géographiques
 
@@ -492,3 +492,103 @@ Migration `20250922_pro_data_seeds.sql` avec secteurs de base :
 - **Bâtiment** : Plomberie, électricité, peinture, carrelage
 - **Digital** : Développement web, design, marketing, photo
 - **Santé & Bien-être** : Massage, coaching, fitness, nutrition
+
+### Admin list users – version active
+
+Signature exacte (RETURNS TABLE) de la fonction SQL actuellement déployée:
+
+```sql
+admin_list_users(
+    page_num INTEGER DEFAULT 1,
+    page_size INTEGER DEFAULT 10,
+    search_term TEXT DEFAULT NULL,
+    role_filter TEXT DEFAULT NULL,
+    sort_by TEXT DEFAULT 'profile_created_at',
+    sort_order TEXT DEFAULT 'desc'
+) RETURNS TABLE (
+    user_id UUID,
+    last_name TEXT,
+    first_name TEXT,
+    address TEXT,
+    postal_code TEXT,
+    city TEXT,
+    phone_number TEXT,
+    role_key TEXT,
+    department_code TEXT,
+    avatar_url TEXT,
+    profile_created_at TIMESTAMPTZ,
+    profile_updated_at TIMESTAMPTZ,
+    department_name TEXT,
+    department_region TEXT,
+    email TEXT,
+    email_confirmed_at TIMESTAMPTZ,
+    last_sign_in_at TIMESTAMPTZ,
+    auth_created_at TIMESTAMPTZ,
+    total_count BIGINT
+);
+```
+
+Exemple de réponse JSON (après mapping côté API):
+
+```json
+{
+  "success": true,
+  "data": {
+    "users": [
+      {
+        "user_id": "6f5d...",
+        "last_name": "Dupont",
+        "first_name": "Jean",
+        "address": null,
+        "postal_code": null,
+        "city": "Paris",
+        "phone_number": "+33...",
+        "role_key": "user",
+        "department_code": "75",
+        "avatar_url": null,
+        "created_at": "2025-09-22T12:34:56.000Z",
+        "updated_at": "2025-09-22T12:35:10.000Z",
+        "auth_users": {
+          "email": "jean@example.com",
+          "email_confirmed_at": null,
+          "last_sign_in_at": null,
+          "created_at": "2025-09-22T12:34:50.000Z"
+        },
+        "french_departments": {
+          "name": "Paris",
+          "region": "Île-de-France"
+        }
+      }
+    ],
+    "pagination": {
+      "currentPage": 1,
+      "totalPages": 1,
+      "totalCount": 1,
+      "limit": 10,
+      "hasNextPage": false,
+      "hasPrevPage": false
+    },
+    "filters": { "search": null, "role": null, "sortBy": "created_at", "sortOrder": "desc" }
+  },
+  "lastUpdated": "2025-09-22T12:40:00.000Z"
+}
+```
+
+### Note Next.js images (hostname précis)
+
+Pour `next/image`, limiter l’hôte aux fichiers de votre projet Supabase afin de réduire la surface d’attaque et respecter les bonnes pratiques:
+
+```ts
+// next.config.ts
+const SUPABASE_HOST = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!).hostname;
+export default {
+  images: {
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      { protocol: "https", hostname: SUPABASE_HOST, pathname: "/storage/v1/object/public/**" }
+    ]
+  }
+}
+```
+
+Cela remplace l’ancien wildcard `*.supabase.co`.

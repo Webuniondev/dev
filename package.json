@@ -10,7 +10,10 @@
     "format": "prettier --write .",
     "analyze": "cross-env ANALYZE=true next build",
     "bundle:check": "node scripts/bundle-budgets.mjs",
-    "bundle:check:all": "cross-env BUNDLE_PAGE=ALL BUNDLE_BUDGET_FIRSTLOAD_KB=200 BUNDLE_BUDGET_CHUNK_KB=150 node scripts/bundle-budgets.mjs"
+    "bundle:check:all": "cross-env BUNDLE_PAGE=ALL BUNDLE_BUDGET_FIRSTLOAD_KB=200 BUNDLE_BUDGET_CHUNK_KB=150 node scripts/bundle-budgets.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:update": "playwright test --update-snapshots"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -43,6 +46,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@next/bundle-analyzer": "^15.5.3",
+    "@playwright/test": "^1.55.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -53,9 +57,16 @@
     "eslint-config-next": "15.5.3",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-simple-import-sort": "^12.1.1",
+    "msw": "^2.11.3",
     "prettier": "^3.6.2",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.8",
     "typescript": "^5"
+  },
+  "playwright": {
+    "version": "1.49.1"
+  },
+  "msw": {
+    "version": "2.5.0"
   }
 }
