@@ -12,6 +12,7 @@ import { SiteHeader } from "@/components/site-header";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
 import CategoriesBrowserServer from "@/components/categories-browser-server";
 import { MovingBorderButton } from "@/components/ui/moving-border";
+import TestimonialsCarousel from "@/components/testimonials-carousel";
 
 import { StickySearch } from "../components/sticky-search";
 
@@ -157,6 +158,9 @@ export default function Home() {
             }),
           }}
         />
+
+        {/* Catégories populaires - placé juste après le Hero */}
+        <CategoriesBrowserServer variant="home" showHeading />
 
         {/* Parcours en 3 étapes */}
         <section aria-labelledby="etapes" className="bg-white">
@@ -367,9 +371,13 @@ export default function Home() {
                 </div>
               </BackgroundGradient>
             </div>
+            {/* Accroche sous les cartes - rapprochée */}
+            <p className="mt-2 sm:mt-3 text-center text-sm sm:text-base text-muted-foreground font-inter">
+              La simplicité pensée pour vous. Nous trouvons, vous choisissez.
+            </p>
           </div>
         </section>
-        {/* Avis clients avec avatars externes (DiceBear) */}
+        {/* Avis clients - carrousel Embla */}
         <section aria-labelledby="testimonials" className="bg-white">
           <div className="container mx-auto max-w-screen-xl px-4 sm:px-6 py-10 sm:py-14">
             <h2
@@ -378,47 +386,49 @@ export default function Home() {
             >
               Ils nous font confiance
             </h2>
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
-              {[
-                {
-                  name: "Sophie",
-                  city: "Lyon",
-                  text: "Trouvé un plombier sérieux en 2h, parfait !",
-                  seed: "Sophie_Lyon",
-                },
-                {
-                  name: "Karim",
-                  city: "Paris",
-                  text: "Devis clair et rapide, très satisfait.",
-                  seed: "Karim_Paris",
-                },
-                {
-                  name: "Laura",
-                  city: "Bordeaux",
-                  text: "Photographe au top pour notre mariage.",
-                  seed: "Laura_Bordeaux",
-                },
-              ].map((t) => (
-                <figure
-                  key={t.name}
-                  className="relative flex h-32 sm:h-36 flex-col rounded-xl border bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20"
-                  tabIndex={0}
-                >
-                  <Quote className="absolute -top-3 -left-3 size-6 text-slate-300" aria-hidden />
-                  <blockquote className="text-sm sm:text-base text-slate-700 leading-relaxed">
-                    “{t.text}”
-                  </blockquote>
-                  <figcaption className="mt-auto pt-3 text-xs sm:text-sm font-semibold text-slate-700 text-right">
-                    {t.name} — {t.city}
-                  </figcaption>
-                </figure>
-              ))}
+            <div className="mt-8">
+              <TestimonialsCarousel
+                autoPlayDelayMs={4500}
+                items={[
+                  {
+                    id: "pubmatic",
+                    company: "PubMatic",
+                    quote:
+                      "We've come a long way with Supernova. Over the past two years, they've made tremendous improvements—especially with collaborative features like commenting and review.",
+                    authorName: "Dev Pradhan",
+                    authorTitle: "Senior UX Designer",
+                  },
+                  {
+                    id: "ourspace-1",
+                    company: "Ourspace",
+                    quote:
+                      "Trouvé un plombier sérieux en 2h, parfait ! Notre expérience s'améliore de mois en mois.",
+                    authorName: "Sophie",
+                    authorTitle: "Lyon",
+                  },
+                  {
+                    id: "ourspace-2",
+                    company: "Ourspace",
+                    quote:
+                      "Devis clair et rapide, très satisfait. Le suivi client est excellent.",
+                    authorName: "Karim",
+                    authorTitle: "Paris",
+                  },
+                  {
+                    id: "ourspace-3",
+                    company: "Ourspace",
+                    quote:
+                      "Photographe au top pour notre mariage. La plateforme est simple et efficace.",
+                    authorName: "Laura",
+                    authorTitle: "Bordeaux",
+                  },
+                ]}
+              />
             </div>
           </div>
         </section>
 
-        {/* Catégories / services dynamiques depuis Supabase */}
-        <CategoriesBrowserServer />
+        
       </main>
     </div>
   );

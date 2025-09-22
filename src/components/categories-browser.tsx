@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -129,11 +130,20 @@ export const CategoriesBrowser: React.FC<Props> = ({
         {/* Bouton Découvrir tous nos services */}
         {variant === "home" ? (
           <div className="mt-6 sm:mt-8 text-center">
-            <a href="/services">
-              <Button size="lg" asChild>
+            <Button size="lg" asChild className="rounded-full group">
+              <a
+                href="/services"
+                className="inline-flex items-center gap-2 pr-6 transition-all duration-200 group-hover:pr-8"
+              >
                 <span>Découvrir tous nos services</span>
-              </Button>
-            </a>
+                <span className="inline-flex w-0 overflow-hidden transition-[width] duration-200 ease-out group-hover:w-4">
+                  <ArrowRight
+                    aria-hidden
+                    className="size-4 -translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100"
+                  />
+                </span>
+              </a>
+            </Button>
           </div>
         ) : null}
 

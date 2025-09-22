@@ -262,9 +262,6 @@ export const DualSearch: React.FC<DualSearchProps> = ({
                           onMouseEnter={() => setServiceActiveIndex(listIndex)}
                         >
                           <span className="font-medium">{s.label}</span>
-                          {s.sectorLabel ? (
-                            <span className="ml-1 text-muted-foreground">— {s.sectorLabel}</span>
-                          ) : null}
                         </div>
                       );
                     })}
@@ -486,9 +483,6 @@ export const DualSearch: React.FC<DualSearchProps> = ({
                           onMouseEnter={() => setServiceActiveIndex(listIndex)}
                         >
                           <span className="font-medium">{s.label}</span>
-                          {s.sectorLabel ? (
-                            <span className="ml-1 text-muted-foreground">— {s.sectorLabel}</span>
-                          ) : null}
                         </div>
                       );
                     })}
