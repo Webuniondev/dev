@@ -361,7 +361,7 @@ export const DualSearch: React.FC<DualSearchProps> = ({
           <button
             type="submit"
             className={cn(
-              "w-full rounded-md bg-primary text-primary-foreground font-medium transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+              "w-full rounded-md bg-primary text-primary-foreground font-medium transition-colors hover:bg-primary/90 hover:cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
               isHero && "h-12 text-base",
               isSticky && "h-11 text-sm",
             )}
@@ -585,7 +585,7 @@ export const DualSearch: React.FC<DualSearchProps> = ({
           <button
             type="submit"
             className={cn(
-              "rounded-md bg-primary text-primary-foreground font-medium transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 whitespace-nowrap",
+              "rounded-md bg-primary text-primary-foreground font-medium transition-colors hover:bg-primary/90 hover:cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 whitespace-nowrap",
               isHero && "h-14 px-8 text-base",
               isSticky && "h-12 px-6 text-sm",
             )}
