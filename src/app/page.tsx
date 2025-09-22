@@ -10,6 +10,7 @@ import { CursorNudge } from "@/components/cursor-nudge";
 import { HeroSearch } from "@/components/hero-search";
 import { SiteHeader } from "@/components/site-header";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
+import CategoriesBrowserServer from "@/components/categories-browser-server";
 import { MovingBorderButton } from "@/components/ui/moving-border";
 
 import { StickySearch } from "../components/sticky-search";
@@ -415,6 +416,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Catégories / services dynamiques depuis Supabase */}
+        <CategoriesBrowserServer />
       </main>
     </div>
   );

@@ -15,6 +15,11 @@ Dernière mise à jour: 22/09/2025
 - **Hooks sécurisés**: `useSecureFetch` pour requêtes client: ✅ OK
 - **Interface moderne**: Dark theme, responsive, optimisé: ✅ OK
 
+### Mises à jour récentes
+
+- Autocomplétion de la recherche (services + départements) intégrée à `DualSearch` (accueil + sticky). Chargement paresseux, navigation clavier, accessibilité ARIA, sécurisée via `useSecureFetch`.
+- Autocomplétion séparée « Catégories » et « Services » avec en‑têtes contrastés; `onSubmit` expose désormais `sectorKey` ou `categoryKey` selon la sélection.
+
 ### À faire (prochaines étapes)
 
 #### Priorité 1 - Fonctionnalités métier

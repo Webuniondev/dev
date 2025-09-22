@@ -56,7 +56,10 @@ async function registerUser(request: NextRequest) {
     const data = validationResult.data;
 
     // Vérifier que l'email n'existe pas déjà
-    const { data: usersList, error: listError } = await admin.auth.admin.listUsers({ page: 1, perPage: 10 });
+    const { data: usersList, error: listError } = await admin.auth.admin.listUsers({
+      page: 1,
+      perPage: 10,
+    });
     if (listError) {
       console.error("Erreur liste utilisateurs:", listError);
       return NextResponse.json(

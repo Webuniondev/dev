@@ -98,21 +98,24 @@ export function UserRegistrationMultiStep({ onBack, onSuccess }: UserRegistratio
   };
 
   // Vérification de disponibilité email
-  const checkEmailAvailability = useCallback(async (email: string) => {
-    if (!email || !email.includes("@")) return;
+  const checkEmailAvailability = useCallback(
+    async (email: string) => {
+      if (!email || !email.includes("@")) return;
 
-    setEmailChecking(true);
-    try {
-      const response = await securePost("/api/check-email", { email });
-      const data = await response.json();
-      setEmailAvailable(data.available);
-    } catch (error) {
-      console.error("Erreur vérification email:", error);
-      setEmailAvailable(null);
-    } finally {
-      setEmailChecking(false);
-    }
-  }, [securePost]);
+      setEmailChecking(true);
+      try {
+        const response = await securePost("/api/check-email", { email });
+        const data = await response.json();
+        setEmailAvailable(data.available);
+      } catch (error) {
+        console.error("Erreur vérification email:", error);
+        setEmailAvailable(null);
+      } finally {
+        setEmailChecking(false);
+      }
+    },
+    [securePost],
+  );
 
   // Validation du mot de passe
   const validatePassword = (password: string, confirmPassword: string) => {
@@ -275,10 +278,14 @@ export function UserRegistrationMultiStep({ onBack, onSuccess }: UserRegistratio
 
               {/* Messages de validation email */}
               {formData.email && !emailChecking && emailAvailable === false && (
-                <p id="email-help" className="text-red-400 text-sm">Cette adresse email est déjà utilisée</p>
+                <p id="email-help" className="text-red-400 text-sm">
+                  Cette adresse email est déjà utilisée
+                </p>
               )}
               {formData.email && !emailChecking && emailAvailable === true && (
-                <p id="email-help" className="text-green-400 text-sm">✓ Adresse email disponible</p>
+                <p id="email-help" className="text-green-400 text-sm">
+                  ✓ Adresse email disponible
+                </p>
               )}
             </div>
           </>

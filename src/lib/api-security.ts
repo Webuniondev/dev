@@ -14,8 +14,14 @@ export function validateApiRequest(request: NextRequest): { isValid: boolean; er
     const browserPatterns = [/Mozilla/, /Chrome/, /Safari/, /Firefox/, /Edge/, /Opera/];
     const isBrowser = browserPatterns.some((pattern) => pattern.test(userAgent));
 
-  const vercelPreview = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "";
-  const allowedOrigins = [currentOrigin, process.env.NEXT_PUBLIC_SITE_URL || "", vercelPreview, "http://localhost", "https://localhost"].filter(Boolean);
+    const vercelPreview = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "";
+    const allowedOrigins = [
+      currentOrigin,
+      process.env.NEXT_PUBLIC_SITE_URL || "",
+      vercelPreview,
+      "http://localhost",
+      "https://localhost",
+    ].filter(Boolean);
 
     const isAllowedReferer = allowedOrigins.some((origin) => referer.startsWith(origin));
 
@@ -42,7 +48,13 @@ export function validateApiRequest(request: NextRequest): { isValid: boolean; er
     const origin = request.headers.get("origin") || "";
     const currentOrigin = request.nextUrl.origin;
     const vercelPreview = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "";
-    const allowedOrigins = [currentOrigin, process.env.NEXT_PUBLIC_SITE_URL || "", vercelPreview, "http://localhost:3000", "https://localhost:3000"].filter(Boolean);
+    const allowedOrigins = [
+      currentOrigin,
+      process.env.NEXT_PUBLIC_SITE_URL || "",
+      vercelPreview,
+      "http://localhost:3000",
+      "https://localhost:3000",
+    ].filter(Boolean);
 
     if (!allowedOrigins.some((allowed) => origin.startsWith(allowed))) {
       return {

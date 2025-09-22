@@ -1,0 +1,109 @@
+Title: Règles Ourspace – Taxonomie Catégories/Services
+
+Summary:
+- Catégories = grands ensembles (secteurs) visibles par l’utilisateur: Artisanat, Bâtiment, Digital, Santé & Bien‑être, Services.
+- Services = prestations affichées dans chaque catégorie: Plomberie, Électricité, Rédaction, Nutrition, etc.
+
+Terminologie (UI/Docs):
+- Toujours afficher « Catégories » pour les secteurs.
+- Toujours afficher « Services » pour les éléments rattachés aux catégories.
+
+Mapping base de données:
+- Table `public.pro_sector` → Catégories (secteurs)
+  - Colonnes clés: `key`, `label`, `description`
+- Table `public.pro_category` → Services (éléments au sein d’une catégorie)
+  - Colonnes clés: `key`, `label`, `description`, `sector_key` (FK `pro_sector.key`)
+
+API:
+- `GET /api/pro-data` renvoie les Catégories (secteurs) et leurs Services:
+  ```json
+  {
+    "sectors": [{
+      "key": "batiment",
+      "label": "Bâtiment",
+      "description": "…",
+      "categories": [ // ← Services
+        { "key": "plomberie", "label": "Plomberie", "description": "…" }
+      ]
+    }]]
+  }
+  ```
+
+Règles d’interface (pages publiques):
+- Accueil:
+  - Bloc « Catégories populaires »: afficher au plus 4 catégories.
+  - Dans chaque carte, afficher les 4 premiers services, puis « + N autres ».
+  - Bouton « Découvrir tous nos services » → redirige vers `/services`.
+- Page `/services`:
+  - Afficher toutes les catégories (tous les secteurs) avec le même pattern (4 services + « + N autres »).
+  - Clic « + N autres »: ouvrir un Dialog shadcn listant tous les services de la catégorie cliquée.
+  - Optionnel (à implémenter selon besoin): clic sur un service → `/recherche?service=<key>`.
+
+Nommage & évolutivité:
+- Utiliser « Catégorie »/« Catégories » pour `pro_sector` dans tout le produit (UI, docs, analytics).
+- Utiliser « Service »/« Services » pour `pro_category`.
+- Si une granularité plus fine est ajoutée plus tard, utiliser un autre terme (ex: « prestations détaillées ») pour éviter d’entrer en conflit avec « Services ».
+
+Accessibilité & design (rappel):
+- Mobile‑first, cartes accessibles (rôles/clavier), contrastes suffisants, zones tactiles ≥ 44px.
+- Utiliser shadcn/ui et Tailwind utilitaires; éviter le CSS personnalisé si non nécessaire.
+
+## Barre de recherche et autocomplétion (majeur)
+
+Objectif: accélérer la saisie et réduire les frictions en proposant des suggestions de **services** et de **lieux** directement dans la barre de recherche.
+
+### Composants concernés
+- `src/components/dual-search.tsx` (coeur UX autocomplétion)
+- `src/components/hero-search.tsx` (accueil)
+- `src/components/sticky-search.tsx` (barre collante au scroll)
+
+### Sources de données
+- **Services**: `GET /api/pro-data` → `sectors[].categories[]`
+- **Lieux**: `GET /api/departments` → `departments[] (code, name)`
+
+### Comportement UX
+- **Sections séparées**: l’autocomplétion du champ service affiche deux sections distinctes avec en‑têtes sur fond contrasté et bordures:
+  - Catégories (secteurs)
+  - Services (catégories au sens métier)
+- **Chargement paresseux**: fetch déclenché au focus d’un input.
+- **Filtrage intelligent**: insensible aux accents/majuscules (normalisation Unicode), max 8 résultats par section.
+- **Clavier**: `↑/↓` pour naviguer, `Enter` pour valider, `Esc` pour fermer (sur les deux sections).
+- **Souris**: clic sur une option = remplissage du champ et fermeture du menu.
+- **Fermeture**: au blur (délai court), touche `Esc`.
+- **Accessibilité**: `role=listbox`, `role=option`, `aria-expanded`, `aria-controls`, `aria-selected`.
+- **Responsive**: menus sous les champs en mobile et desktop; styles harmonisés aux variantes `hero` et `sticky`.
+
+### Contrat de soumission (DualSearch.onSubmit)
+Retourne maintenant:
+
+```ts
+{
+  service: string;      // libellé saisi/choisi
+  location: string;     // libellé lieu
+  sectorKey?: string;   // présent si une Catégorie (secteur) a été choisie
+  categoryKey?: string; // présent si un Service a été choisi
+}
+```
+
+### Sécurité
+- Requêtes via `useSecureFetch` ajoutant `X-Requested-With` (mitigation CSRF) et `Content-Type`.
+- Aucune clé secrète côté client; endpoints renvoient des données publiques.
+- Référence OWASP: éviter l’exécution de contenu injecté (sortie non HTML, pas d’`dangerouslySetInnerHTML`).
+
+### Performance
+- Fetch à la demande uniquement (pas au mount); résultats tronqués à 8.
+- Mémoïsation des listes filtrées; pas de re-rendus inutiles.
+- Zéro dépendance lourde (pas d’algolia/3rd‑party pour l’instant).
+
+### Tests manuels (acceptation)
+1. Taper « bât » → section Catégories visible ("Bâtiment") + section Services si pertinents.
+2. Taper « plomb » → section Services visible ("Plomberie"), `Enter` sélectionne l’élément actif.
+3. Taper « pari » ou « 75 » dans le champ lieu → suggestions de départements; `Enter` sélectionne.
+4. `Esc` ferme la liste; blur ferme la liste.
+5. Vérifier mobile et desktop; vérifier que `/api/pro-data` et `/api/departments` répondent 200.
+
+### Évolutions possibles
+- Ajouter communes (villes) via une nouvelle route paginée.
+- Pondération par popularité et historique de recherche.
+- Internationalisation des libellés.
+

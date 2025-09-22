@@ -478,8 +478,8 @@ API unifiée d'inscription avec schéma discriminant :
 - **Client admin** : Utilisation `supabaseAdmin()` pour création
 - **Validation** : Schémas Zod stricts côté API
 - **Unicité email** : Vérification via `listUsers()`
- - **Triggers actifs** : `check_pro_profile_required` (AFTER sur `user_profile`)
- - **Triggers retirés** : `validate_pro_profile` (verrou poule/œuf résolu)
+- **Triggers actifs** : `check_pro_profile_required` (AFTER sur `user_profile`)
+- **Triggers retirés** : `validate_pro_profile` (verrou poule/œuf résolu)
 - **Transaction atomique** : Rollback automatique si erreur
 - **Cohérence métier** : Validation secteur ↔ catégorie
 
@@ -585,10 +585,10 @@ export default {
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
-      { protocol: "https", hostname: SUPABASE_HOST, pathname: "/storage/v1/object/public/**" }
-    ]
-  }
-}
+      { protocol: "https", hostname: SUPABASE_HOST, pathname: "/storage/v1/object/public/**" },
+    ],
+  },
+};
 ```
 
 Cela remplace l’ancien wildcard `*.supabase.co`.

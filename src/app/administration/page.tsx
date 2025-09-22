@@ -64,7 +64,10 @@ export default async function AdministrationPage() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
           {/* Carte Gestion des utilisateurs */}
           <Link href="/administration/utilisateurs">
-            <Card className="h-full cursor-pointer rounded-lg" style={{ backgroundColor: "#181818" }}>
+            <Card
+              className="h-full cursor-pointer rounded-lg"
+              style={{ backgroundColor: "#181818" }}
+            >
               <CardHeader>
                 <CardTitle className="text-gray-100">Gestion des utilisateurs</CardTitle>
                 <CardDescription className="text-gray-400">
@@ -98,14 +101,21 @@ export default async function AdministrationPage() {
 
           {/* Carte Secteurs & catégories */}
           <Link href="/administration/secteurs" className="block h-full">
-            <Card className="h-full cursor-pointer rounded-lg" style={{ backgroundColor: "#181818" }}>
+            <Card
+              className="h-full cursor-pointer rounded-lg"
+              style={{ backgroundColor: "#181818" }}
+            >
               <CardHeader>
                 <CardTitle className="text-gray-100">Secteurs & catégories</CardTitle>
-                <CardDescription className="text-gray-400">Vue d&apos;ensemble des secteurs d&apos;activité</CardDescription>
+                <CardDescription className="text-gray-400">
+                  Vue d&apos;ensemble des secteurs d&apos;activité
+                </CardDescription>
               </CardHeader>
               <CardContent className="flex h-full flex-col">
                 <div className="space-y-4">
-                  <p className="text-gray-300">Accéder au résumé des secteurs et au détail par secteur.</p>
+                  <p className="text-gray-300">
+                    Accéder au résumé des secteurs et au détail par secteur.
+                  </p>
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 rounded-lg" style={{ backgroundColor: "#0f0f0f" }}>
                       <div className="text-3xl font-bold text-white">{sectorsCount ?? 0}</div>
@@ -117,7 +127,9 @@ export default async function AdministrationPage() {
                     </div>
                   </div>
                 </div>
-                <div className="text-sm text-gray-500 mt-auto flex items-center gap-1">Cliquer pour accéder →</div>
+                <div className="text-sm text-gray-500 mt-auto flex items-center gap-1">
+                  Cliquer pour accéder →
+                </div>
               </CardContent>
             </Card>
           </Link>

@@ -21,12 +21,15 @@ export default async function AdminSectorsPage() {
 
   const { data: sectors } = await supabase
     .from("pro_sector")
-    .select(
-      `key,label,description,pro_category:pro_category(key,label)`
-    )
+    .select(`key,label,description,pro_category:pro_category(key,label)`)
     .order("label");
 
-  type SectorRow = { key: string; label: string; description: string | null; pro_category: { key: string; label: string }[] };
+  type SectorRow = {
+    key: string;
+    label: string;
+    description: string | null;
+    pro_category: { key: string; label: string }[];
+  };
 
   const items = ((sectors as SectorRow[]) || []).map((s) => ({
     key: s.key,
@@ -43,7 +46,9 @@ export default async function AdminSectorsPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-white">Secteurs & catégories</h1>
-            <p className="text-gray-400 mt-2">Résumé des secteurs d&apos;activité et de leurs catégories</p>
+            <p className="text-gray-400 mt-2">
+              Résumé des secteurs d&apos;activité et de leurs catégories
+            </p>
           </div>
           <Link href="/administration" className="text-gray-400 hover:text-white transition-colors">
             ← Retour à l&apos;administration
@@ -80,10 +85,16 @@ export default async function AdminSectorsPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 gap-3">
-                  <Link href={`/administration/secteurs/${s.key}`} className="p-3 rounded-lg block" style={{ backgroundColor: "#0f0f0f" }}>
+                  <Link
+                    href={`/administration/secteurs/${s.key}`}
+                    className="p-3 rounded-lg block"
+                    style={{ backgroundColor: "#0f0f0f" }}
+                  >
                     <div className="text-2xl font-bold text-white">{s.categoriesCount}</div>
                     <div className="text-gray-300">catégories</div>
-                    <div className="text-sm text-gray-500 mt-2 sticky bottom-0">Voir les catégories →</div>
+                    <div className="text-sm text-gray-500 mt-2 sticky bottom-0">
+                      Voir les catégories →
+                    </div>
                   </Link>
                 </div>
               </CardContent>
@@ -94,5 +105,3 @@ export default async function AdminSectorsPage() {
     </div>
   );
 }
-
-
