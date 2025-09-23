@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export function SiteFooter() {
   return (
-    <footer className="w-full border-t bg-black text-white py-[10px]">
+    <footer className="w-full border-t bg-black text-white py-[20px]">
       <div className="container mx-auto flex items-center justify-between px-4 sm:px-6">
         {/* Nom de l'entreprise à gauche */}
         <div className="flex items-center">
@@ -57,7 +57,7 @@ export function SiteFooter() {
 
       {/* Version mobile pour tous les liens */}
       <div className="sm:hidden border-t border-white/10">
-        <div className="container mx-auto px-4 py-[10px]">
+        <div className="container mx-auto px-4 py-[20px]">
           <div className="grid grid-cols-2 gap-4 text-xs text-white/80">
             {/* Colonne gauche - Liens légaux */}
             <div className="flex flex-col items-center gap-2">

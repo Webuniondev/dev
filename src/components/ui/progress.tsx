@@ -15,8 +15,9 @@ function Progress({
       className={cn("relative h-2 w-full overflow-hidden rounded-full bg-white/10", className)}
       {...props}
     >
+      {/* Barre désactivée (retirée visuellement) */}
       <ProgressPrimitive.Indicator
-        className="h-full w-full flex-1 bg-green-500 transition-all"
+        className="h-full w-full flex-1 bg-transparent transition-all"
         style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
       />
     </ProgressPrimitive.Root>

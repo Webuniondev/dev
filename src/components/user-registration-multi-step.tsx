@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { Stepper } from "@/components/ui/stepper";
 import { useSecureFetch } from "@/lib/hooks/use-secure-fetch";
 
 interface Department {
@@ -236,14 +237,9 @@ export function UserRegistrationMultiStep({ onBack, onSuccess }: UserRegistratio
         <p className="text-white/60 text-sm">Créez votre compte utilisateur</p>
       </div>
 
-      {/* Barre de progression */}
-      <div className="mb-8">
-        <div className="flex justify-between text-sm text-white/70 mb-2">
-          <span>
-            Étape {currentStep} sur {steps.length}
-          </span>
-          <span>{Math.round((currentStep / steps.length) * 100)}%</span>
-        </div>
+      {/* Stepper contrasté */}
+      <Stepper steps={steps} current={currentStep} className="mb-6" />
+      <div className="mb-4">
         <Progress value={(currentStep / steps.length) * 100} className="w-full" />
       </div>
 
