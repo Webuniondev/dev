@@ -3,9 +3,10 @@
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 import { SidebarApp } from "@/components/sidebar-app";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useAuthStore } from "@/lib/store/auth";
 
 type Props = {
@@ -77,7 +78,16 @@ export function AppShell({ displayName, email, roleKey, avatarUrl, children }: P
       </div>
       {/* Mobile drawer */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="p-0 w-64 bg-slate-900 text-slate-100">
+        <SheetContent
+          side="left"
+          aria-label="Navigation latérale"
+          className="p-0 w-64 bg-slate-900 text-slate-100"
+        >
+          <SheetHeader className="p-0">
+            <VisuallyHidden asChild>
+              <SheetTitle>Navigation latérale</SheetTitle>
+            </VisuallyHidden>
+          </SheetHeader>
           <SidebarApp
             displayName={displayName}
             email={email}

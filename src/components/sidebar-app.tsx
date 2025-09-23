@@ -25,7 +25,7 @@ export function SidebarApp({
     >
       <div className="h-14 flex items-center justify-start border-b border-slate-800 px-4 flex-shrink-0">
         <Link href="/" className="relative inline-flex items-center">
-          <span className="inline-block font-caveat text-3xl leading-none">
+          <span className="inline-block font-caveat text-3xl leading-none font-medium">
             Ourspace
           </span>
         </Link>
