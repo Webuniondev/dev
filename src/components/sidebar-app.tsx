@@ -23,9 +23,11 @@ export function SidebarApp({
     <aside
       className={`${mobile ? "flex" : "hidden sm:flex"} w-64 flex-col h-full bg-slate-900 text-slate-100`}
     >
-      <div className="h-14 flex items-center border-b border-slate-800 px-4 text-sm uppercase tracking-wide flex-shrink-0">
-        <Link href="/" className="font-archivo-black hover:underline">
-          OURSPACE
+      <div className="h-14 flex items-center justify-start border-b border-slate-800 px-4 flex-shrink-0">
+        <Link href="/" className="relative inline-flex items-center">
+          <span className="inline-block font-caveat text-3xl leading-none">
+            Ourspace
+          </span>
         </Link>
       </div>
 
@@ -46,7 +48,7 @@ export function SidebarApp({
               href="/administration"
               className="flex items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500"
             >
-              <span>🛡️ Panneau admin</span>
+              <span>Panneau admin</span>
             </Link>
           </>
         )}

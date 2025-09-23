@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
+import { motion } from "motion/react";
 
 import { SidebarApp } from "@/components/sidebar-app";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -21,6 +22,8 @@ export function AppShell({ displayName, email, roleKey, avatarUrl, children }: P
   const pathname = usePathname();
   const storeAvatarUrl = useAuthStore((s) => s.avatarUrl ?? null);
 
+  const SIDEBAR_WIDTH_PX = 256; // w-64
+
   const title = useMemo(() => {
     if (!pathname || pathname === "/") return "Accueil";
     const segs = pathname.split("/").filter(Boolean);
@@ -29,11 +32,17 @@ export function AppShell({ displayName, email, roleKey, avatarUrl, children }: P
   }, [pathname]);
 
   return (
-    <div
-      className={`h-dvh grid grid-cols-1 overflow-hidden ${collapsed ? "sm:grid-cols-1" : "sm:grid-cols-[16rem_1fr]"}`}
-    >
-      {!collapsed && (
-        <div className="h-full overflow-hidden">
+    <div className="h-dvh flex overflow-hidden">
+      {/* Desktop sidebar with smooth width animation */}
+      <motion.aside
+        initial={{ width: collapsed ? 0 : SIDEBAR_WIDTH_PX }}
+        animate={{ width: collapsed ? 0 : SIDEBAR_WIDTH_PX }}
+        transition={{ type: "spring", stiffness: 260, damping: 30 }}
+        className="hidden h-full overflow-hidden bg-slate-900 text-slate-100 sm:flex"
+        aria-hidden={collapsed}
+      >
+        {/* Keep SidebarApp intact; wrap to preserve intrinsic width w-64 */}
+        <div className="w-64 h-full">
           <SidebarApp
             displayName={displayName}
             email={email}
@@ -41,10 +50,8 @@ export function AppShell({ displayName, email, roleKey, avatarUrl, children }: P
             avatarUrl={storeAvatarUrl ?? avatarUrl ?? null}
           />
         </div>
-      )}
-      <div
-        className={`flex h-full flex-col overflow-hidden ${!collapsed ? "border-l border-slate-800" : ""}`}
-      >
+      </motion.aside>
+      <div className="flex h-full flex-1 flex-col overflow-hidden border-l border-slate-800">
         <header className="h-14 bg-slate-900 text-slate-100 border-b border-slate-800 flex items-center px-4 sm:px-6 flex-shrink-0">
           <button
             type="button"
