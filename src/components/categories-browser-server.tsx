@@ -43,5 +43,12 @@ export default async function CategoriesBrowserServer({
 
   if (!formatted.length) return null;
 
-  return <CategoriesBrowser sectors={formatted} variant={variant} showHeading={showHeading} padding={padding} />;
+  return (
+    <CategoriesBrowser
+      sectors={formatted}
+      variant={variant}
+      showHeading={showHeading}
+      padding={padding}
+    />
+  );
 }

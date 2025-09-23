@@ -1,9 +1,9 @@
 "use client";
 
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
-import { motion } from "motion/react";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 import { SidebarApp } from "@/components/sidebar-app";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
