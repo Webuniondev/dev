@@ -1,7 +1,8 @@
 "use client";
 
+import type { EmblaOptionsType } from "embla-carousel";
+import useEmblaCarousel from "embla-carousel-react";
 import * as React from "react";
-import useEmblaCarousel, { type EmblaOptionsType } from "embla-carousel-react";
 
 type Testimonial = {
   id: string;
@@ -125,5 +126,3 @@ export const TestimonialsCarousel: React.FC<Props> = ({
 };
 
 export default TestimonialsCarousel;
-
-

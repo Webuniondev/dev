@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { ArrowRight } from "lucide-react";
+import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,29 +33,29 @@ export const CategoriesBrowser: React.FC<Props> = ({
   showHeading = true,
   padding = "normal",
 }) => {
-  const [showAll, setShowAll] = React.useState(variant === "all");
+  const [showAll] = React.useState(variant === "all");
   const [openSectorKey, setOpenSectorKey] = React.useState<string | null>(null);
 
   const popularSectors = React.useMemo(() => sectors.slice(0, 4), [sectors]);
 
-  // Variantes de couleurs pour l'effet glass
+  // Variantes de couleurs pour l'effet glass (ultra sophistiqué avec opacités variables)
   const glassBase =
-    "backdrop-blur-md supports-[backdrop-filter]:bg-white/30 bg-white/20 border shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5";
+    "relative isolate overflow-hidden backdrop-blur-2xl backdrop-saturate-200 supports-[backdrop-filter]:bg-white/8 bg-white/15 border border-white/30 ring-1 ring-inset ring-white/20 shadow-[0_10px_40px_rgba(0,0,0,0.15)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.25)] transition-all duration-500 hover:-translate-y-1 hover:scale-[1.02] before:absolute before:inset-0 before:rounded-[inherit] before:bg-gradient-to-br before:from-white/60 before:via-white/20 before:to-transparent before:opacity-30 before:content-[''] after:pointer-events-none after:absolute after:top-0 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-transparent after:via-white/70 after:to-transparent after:opacity-80 after:content-['']";
   const colorVariants = [
-    "bg-gradient-to-br from-indigo-500/10 to-sky-500/10 border-indigo-400/30",
-    "bg-gradient-to-br from-rose-500/10 to-orange-500/10 border-rose-400/30",
-    "bg-gradient-to-br from-emerald-500/10 to-lime-500/10 border-emerald-400/30",
-    "bg-gradient-to-br from-amber-500/10 to-pink-500/10 border-amber-400/30",
-    "bg-gradient-to-br from-fuchsia-500/10 to-purple-500/10 border-fuchsia-400/30",
-    "bg-gradient-to-br from-sky-500/10 to-cyan-500/10 border-sky-400/30",
+    "bg-gradient-to-br from-indigo-500/8 to-sky-500/12 border-indigo-400/40 hover:from-indigo-500/12 hover:to-sky-500/16",
+    "bg-gradient-to-br from-rose-500/8 to-orange-500/12 border-rose-400/40 hover:from-rose-500/12 hover:to-orange-500/16",
+    "bg-gradient-to-br from-emerald-500/8 to-lime-500/12 border-emerald-400/40 hover:from-emerald-500/12 hover:to-lime-500/16",
+    "bg-gradient-to-br from-amber-500/8 to-pink-500/12 border-amber-400/40 hover:from-amber-500/12 hover:to-pink-500/16",
+    "bg-gradient-to-br from-fuchsia-500/8 to-purple-500/12 border-fuchsia-400/40 hover:from-fuchsia-500/12 hover:to-purple-500/16",
+    "bg-gradient-to-br from-sky-500/8 to-cyan-500/12 border-sky-400/40 hover:from-sky-500/12 hover:to-cyan-500/16",
   ];
 
-  const handleDiscoverAll = () => {
-    setShowAll(true);
-    // Scroll doux vers la grille complète
-    const el = document.getElementById("all-categories-grid");
-    el?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  // const handleDiscoverAll = () => {
+  //   setShowAll(true);
+  //   // Scroll doux vers la grille complète
+  //   const el = document.getElementById("all-categories-grid");
+  //   el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  // };
 
   const openDialog = (sectorKey: string) => setOpenSectorKey(sectorKey);
   const closeDialog = () => setOpenSectorKey(null);
@@ -105,7 +105,7 @@ export const CategoriesBrowser: React.FC<Props> = ({
                   <CardTitle className="text-xl font-semibold">{sector.label}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="text-sm text-muted-foreground space-y-1">
+                  <ul className="text-sm text-[#262E40] space-y-1 font-inter">
                     {sector.categories.slice(0, 4).map((cat) => (
                       <li key={cat.key} className="truncate">
                         {cat.label}
@@ -130,16 +130,20 @@ export const CategoriesBrowser: React.FC<Props> = ({
         {/* Bouton Découvrir tous nos services */}
         {variant === "home" ? (
           <div className="mt-6 sm:mt-8 text-center">
-            <Button size="lg" asChild className="rounded-full group">
+            <Button
+              asChild
+              variant="ghost"
+              className="rounded-full group relative isolate overflow-hidden h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-white/15 bg-white/20 border border-white/20 ring-1 ring-inset ring-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.18)] transition-all duration-300 before:absolute before:inset-0 before:rounded-[inherit] before:bg-gradient-to-br before:from-white/70 before:to-transparent before:opacity-20 before:content-['']"
+            >
               <a
                 href="/services"
                 className="inline-flex items-center gap-2 pr-6 transition-all duration-200 group-hover:pr-8"
               >
                 <span>Découvrir tous nos services</span>
-                <span className="inline-flex w-0 overflow-hidden transition-[width] duration-200 ease-out group-hover:w-4">
+                <span className="inline-flex w-0 overflow-hidden transition-[width] duration-200 ease-out group-hover:w-5">
                   <ArrowRight
                     aria-hidden
-                    className="size-4 -translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100"
+                    className="size-5 -translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100"
                   />
                 </span>
               </a>
@@ -163,7 +167,7 @@ export const CategoriesBrowser: React.FC<Props> = ({
                       <CardTitle className="text-lg font-semibold">{sector.label}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <ul className="text-sm text-muted-foreground space-y-1">
+                      <ul className="text-sm text-[#262E40] space-y-1 font-inter">
                         {sector.categories.slice(0, 4).map((cat) => (
                           <li key={cat.key} className="truncate">
                             {cat.label}
@@ -199,7 +203,7 @@ export const CategoriesBrowser: React.FC<Props> = ({
               {currentSector?.categories.map((cat) => (
                 <div
                   key={cat.key}
-                  className="rounded-md border p-3 text-sm hover:bg-muted/50 cursor-pointer"
+                  className="rounded-md border p-3 text-sm hover:bg-muted/50 cursor-pointer font-inter text-[#262E40]"
                   role="button"
                   tabIndex={0}
                   onClick={closeDialog}

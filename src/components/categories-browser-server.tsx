@@ -1,12 +1,14 @@
-import { CategoriesBrowser } from "@/components/categories-browser";
+import { CategoriesBrowser, type Category } from "@/components/categories-browser";
 import { supabaseServer } from "@/lib/supabase/server";
 
 export default async function CategoriesBrowserServer({
   variant = "home",
   showHeading = true,
+  padding = "normal",
 }: {
   variant?: "home" | "all";
   showHeading?: boolean;
+  padding?: "normal" | "compact";
 }) {
   const supabase = await supabaseServer({ readOnly: true });
 
@@ -35,11 +37,11 @@ export default async function CategoriesBrowserServer({
     sectors?.map((s) => ({
       key: s.key as string,
       label: s.label as string,
-      description: (s as any).description as string | null,
-      categories: (s as any).pro_category || [],
+      description: s.description as string | null,
+      categories: ((s as { pro_category?: Category[] }).pro_category || []) as Category[],
     })) || [];
 
   if (!formatted.length) return null;
 
-  return <CategoriesBrowser sectors={formatted} variant={variant} showHeading={showHeading} />;
+  return <CategoriesBrowser sectors={formatted} variant={variant} showHeading={showHeading} padding={padding} />;
 }

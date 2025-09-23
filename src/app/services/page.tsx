@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
-import { SiteHeader } from "@/components/site-header";
 import CategoriesBrowserServer from "@/components/categories-browser-server";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {
   title: "Tous nos services – Ourspace",
@@ -27,6 +28,7 @@ export default function ServicesPage() {
         {/* Grille complète (toutes les catégories) */}
         <CategoriesBrowserServer variant="all" showHeading={false} padding="compact" />
       </main>
+      <SiteFooter />
     </div>
   );
 }

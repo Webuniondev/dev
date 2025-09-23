@@ -54,7 +54,7 @@ export function ProRegistrationForm({ onBack, onSuccess }: ProRegistrationFormPr
           const proData = await proResponse.json();
           setSectors(proData.sectors || []);
         } else {
-          throw new Error("Erreur lors du chargement des secteurs");
+          throw new Error("Erreur lors du chargement des catégories");
         }
 
         if (deptResponse.ok) {
@@ -72,7 +72,7 @@ export function ProRegistrationForm({ onBack, onSuccess }: ProRegistrationFormPr
     fetchData();
   }, [secureGet]);
 
-  // Réinitialiser la catégorie quand le secteur change
+  // Réinitialiser le service quand la catégorie change
   useEffect(() => {
     setSelectedCategory("");
   }, [selectedSector]);
@@ -136,7 +136,7 @@ export function ProRegistrationForm({ onBack, onSuccess }: ProRegistrationFormPr
         </div>
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-          <span className="ml-2 text-white/70">Chargement des secteurs...</span>
+          <span className="ml-2 text-white/70">Chargement des catégories...</span>
         </div>
       </div>
     );
@@ -220,11 +220,11 @@ export function ProRegistrationForm({ onBack, onSuccess }: ProRegistrationFormPr
           />
         </div>
 
-        {/* Secteur et catégorie */}
+        {/* Catégorie et service */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <div className="space-y-1">
             <Label htmlFor="sector" className="text-white">
-              Secteur d&apos;activité *
+              Catégorie d&apos;activité *
             </Label>
             <select
               id="sector"
@@ -234,7 +234,7 @@ export function ProRegistrationForm({ onBack, onSuccess }: ProRegistrationFormPr
               className="w-full px-3 py-2 rounded-md bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none"
             >
               <option value="" className="bg-gray-800">
-                Sélectionnez un secteur
+                Sélectionnez une catégorie
               </option>
               {sectors.map((sector) => (
                 <option key={sector.key} value={sector.key} className="bg-gray-800">
@@ -246,7 +246,7 @@ export function ProRegistrationForm({ onBack, onSuccess }: ProRegistrationFormPr
 
           <div className="space-y-1">
             <Label htmlFor="category" className="text-white">
-              Spécialité *
+              Service proposé *
             </Label>
             <select
               id="category"
@@ -257,7 +257,7 @@ export function ProRegistrationForm({ onBack, onSuccess }: ProRegistrationFormPr
               className="w-full px-3 py-2 rounded-md bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none disabled:opacity-50"
             >
               <option value="" className="bg-gray-800">
-                {selectedSector ? "Sélectionnez une spécialité" : "Choisissez d'abord un secteur"}
+                {selectedSector ? "Sélectionnez un service" : "Choisissez d'abord une catégorie"}
               </option>
               {availableCategories.map((category) => (
                 <option key={category.key} value={category.key} className="bg-gray-800">

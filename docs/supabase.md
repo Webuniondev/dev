@@ -591,4 +591,319 @@ export default {
 };
 ```
 
-Cela remplace l’ancien wildcard `*.supabase.co`.
+Cela remplace l'ancien wildcard `*.supabase.co`.
+
+## Récupération de mot de passe (Password Recovery)
+
+### Vue d'ensemble
+
+Implémentation complète du flux de récupération de mot de passe utilisant l'API Supabase Auth avec redirection personnalisée et validation renforcée.
+
+### Architecture du flux
+
+```
+Page connexion → Mot de passe oublié → Email + callback → Nouveau mot de passe
+     ↓                    ↓                   ↓                    ↓
+ /login            /forgot-password     /auth/callback      /reset-password
+"Mot de passe      Saisie email +      Exchange code       Critères stricts +
+ oublié ?"         validation Zod      for session         validation temps réel
+```
+
+### Pages et composants créés
+
+#### 1. `/forgot-password` - Demande de récupération
+
+- **Style** : Glassmorphism identique à `/login` et `/register`
+- **Validation** : Email via Zod (`forgotPasswordSchema`)
+- **Server Action** : `resetPasswordRequest` avec `supabase.auth.resetPasswordForEmail`
+- **Gestion d'erreurs** : Rate limiting (`over_email_send_rate_limit`) et erreurs réseau
+- **Redirection** : Vers `/auth/callback?next=/reset-password&type=recovery`
+
+#### 2. `/auth/callback` - Échange de code
+
+- **API Route** : `src/app/auth/callback/route.ts`
+- **Fonction** : Exchange `code` parameter pour session active
+- **Redirection** : Vers `next` URL (typiquement `/reset-password`)
+- **Fallback** : Vers `/forgot-password` avec message d'erreur
+
+#### 3. `/reset-password` - Nouveau mot de passe
+
+- **Composant principal** : `ResetPasswordForm` (client) + `ResetRecoveryBridge`
+- **Validation** : Critères stricts temps réel (8+ chars, majuscule, chiffre)
+- **Server Action** : `updatePassword` avec double validation
+- **Sécurité** : Déconnexion forcée après changement
+
+### Composants clés
+
+#### `ResetPasswordForm` - Validation intelligente
+
+```typescript
+// Critères de validation stricts
+const hasMinLength = password.length >= 8;
+const hasUppercase = /[A-Z]/.test(password);
+const hasNumber = /[0-9]/.test(password);
+
+const isPasswordValid = hasMinLength && hasUppercase && hasNumber;
+const doPasswordsMatch = password === confirmPassword && password.length > 0;
+const isFormValid = isPasswordValid && doPasswordsMatch;
+
+// Bouton désactivé si critères non respectés
+<Button disabled={!isFormValid || isSubmitting}>
+```
+
+#### `ResetRecoveryBridge` - Session multi-format
+
+```typescript
+// Gestion de 4 formats de récupération Supabase :
+// 1. code (standard) → exchangeCodeForSession
+// 2. access_token + refresh_token (hash) → setSession
+// 3. token_hash (search params) → verifyOtp
+// 4. token (legacy) → verifyOtp fallback
+```
+
+### Validation Zod et sécurité
+
+#### Schemas de validation
+
+```typescript
+// src/lib/validation/user.ts
+
+// Demande de récupération
+export const forgotPasswordSchema = z.object({
+  email: z.string().email("Email invalide"),
+});
+
+// Réinitialisation avec critères stricts
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Au moins 8 caractères")
+      .regex(/[A-Z]/, "Au moins une majuscule")
+      .regex(/[0-9]/, "Au moins un chiffre"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Les mots de passe ne correspondent pas",
+    path: ["confirmPassword"],
+  });
+```
+
+#### Gestion d'erreurs spécifiques
+
+- **Rate limiting (429)** : "Trop de demandes. Veuillez attendre."
+- **Token expiré** : Redirection vers `/forgot-password`
+- **Même mot de passe (`same_password`)** : Message explicite
+- **Session manquante** : Bridge de récupération multi-méthodes
+- **Validation temps réel** : Feedback visuel par critère
+
+### Configuration email Supabase
+
+Template HTML avec design Ourspace dans **Auth > Email Templates > Reset Password** :
+
+```html
+<a
+  href="{{ .ConfirmationURL }}"
+  style="background: white; color: #1a202c; padding: 12px 24px; border-radius: 6px;"
+>
+  Réinitialiser mon mot de passe
+</a>
+```
+
+**Redirect URL configurée** : `${SITE_URL}/auth/callback?next=/reset-password&type=recovery`
+
+### Fichiers créés/modifiés
+
+**Pages nouvelles :**
+
+- `src/app/forgot-password/page.tsx`
+- `src/app/reset-password/page.tsx`
+- `src/app/auth/callback/route.ts`
+
+**Composants nouveaux :**
+
+- `src/components/reset-password-form.tsx`
+- `src/components/reset-recovery-bridge.tsx`
+
+**Modifications :**
+
+- `src/app/login/page.tsx` (lien "Mot de passe oublié ?")
+- `src/lib/validation/user.ts` (schemas)
+- `src/components/auth-welcome-listener.tsx` (pas de toast sur reset)
+- `src/middleware.ts` (simplification)
+
+### Tests recommandés
+
+1. **Flux nominal** : Demande → Email → Nouveau mot de passe → Connexion
+2. **Rate limiting** : Demandes multiples → Message d'attente
+3. **Critères password** : Validation temps réel + serveur
+4. **Sécurité** : Pas d'accès direct `/reset-password`, déconnexion forcée
+
+## Footer et navigation
+
+### Vue d'ensemble
+
+Footer moderne avec design cohérent au header, navigation complète et responsive design optimisé.
+
+### Conception et style
+
+#### Design cohérent avec le header
+
+- **Couleur** : `bg-black text-white` (identique au header)
+- **Police** : `font-archivo-black` pour le nom OURSPACE
+- **Bordure** : `border-t` (au lieu de `border-b` du header)
+- **Hauteur** : Structure flexible avec padding `py-[10px]`
+- **Glassmorphism** : Bouton Centre d'aide avec effet glass
+
+#### Layout responsive
+
+**Desktop/Tablette :**
+
+```
+OURSPACE  │  Politique confidentialité  Mentions légales  FAQ  Tarifs  │  [Centre d'aide]
+```
+
+**Mobile :**
+
+```
+OURSPACE                    [Centre d'aide]
+────────────────────────────────────────────
+Politique confidentialité    FAQ
+Mentions légales             Tarifs
+```
+
+### Structure et composants
+
+#### Composant principal (`SiteFooter`)
+
+```typescript
+// src/components/site-footer.tsx
+
+export function SiteFooter() {
+  return (
+    <footer className="w-full border-t bg-black text-white py-[10px]">
+      <div className="container mx-auto flex items-center justify-between px-4 sm:px-6">
+        {/* Nom de l'entreprise à gauche */}
+        <div className="flex items-center">
+          <span className="text-lg font-archivo-black">OURSPACE</span>
+        </div>
+
+        {/* Centre - Tous les liens avec espacement uniforme */}
+        <div className="hidden sm:flex items-center gap-12">
+          <Link href="/politique-confidentialite">Politique de confidentialité</Link>
+          <Link href="/mentions-legales">Mentions légales</Link>
+          <Link href="/faq">FAQ</Link>
+          <Link href="/tarifs">Tarifs</Link>
+        </div>
+
+        {/* Bouton centre d'aide à droite */}
+        <Button variant="outline" className="border-white bg-white text-black hover:bg-white/90">
+          <Link href="/centre-aide" className="flex items-center gap-2">
+            <HelpCircle className="size-4" />
+            <span className="hidden sm:inline">Centre d'aide</span>
+          </Link>
+        </Button>
+      </div>
+
+      {/* Version mobile */}
+      <div className="sm:hidden border-t border-white/10">
+        <div className="container mx-auto px-4 py-[10px]">
+          <div className="grid grid-cols-2 gap-4 text-xs text-white/80">
+            {/* Liens organisés en 2 colonnes */}
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+```
+
+#### Intégration dans les pages publiques
+
+**Pages concernées :**
+
+- `src/app/page.tsx` (Homepage)
+- `src/app/services/page.tsx` (Services)
+
+**Pattern d'intégration :**
+
+```typescript
+// Structure des pages publiques
+<div className="min-h-dvh flex flex-col">
+  <SiteHeader />
+  <main className="flex-1">
+    {/* Contenu de la page */}
+  </main>
+  <SiteFooter />
+</div>
+```
+
+### Navigation et liens
+
+#### Liens disponibles
+
+1. **Politique de confidentialité** (`/politique-confidentialite`)
+2. **Mentions légales** (`/mentions-legales`)
+3. **FAQ** (`/faq`)
+4. **Tarifs** (`/tarifs`)
+5. **Centre d'aide** (`/centre-aide`) - Bouton avec icône
+
+#### Espacement et hiérarchie
+
+- **Gap uniforme** : `gap-12` (48px) entre tous les liens
+- **Ordre logique** : Liens légaux → Informations pratiques → Support
+- **Accessibilité** : Zones tactiles ≥44px, contrastes conformes
+
+### Responsive design
+
+#### Breakpoints et adaptation
+
+**Desktop (≥640px) :**
+
+- Tous les liens en ligne horizontale
+- Espacement uniforme avec `gap-12`
+- Bouton Centre d'aide avec texte visible
+
+**Mobile (<640px) :**
+
+- Header avec OURSPACE + bouton Centre d'aide (icône seule)
+- Section séparée avec liens en grid 2 colonnes
+- Centrage vertical et horizontal optimal
+
+#### Styles adaptatifs
+
+```scss
+// Pattern utilisé
+.hidden sm:flex         // Caché mobile, flex desktop
+.sm:hidden             // Visible mobile, caché desktop
+.sm:inline            // Texte visible uniquement desktop
+```
+
+### Accessibilité et UX
+
+#### Standards appliqués
+
+- **Sémantique** : Balise `<footer>` avec structure claire
+- **Navigation clavier** : Tous les liens focusables
+- **Contrastes** : Texte blanc sur fond noir (ratio optimal)
+- **Zones tactiles** : Boutons et liens ≥44px de hauteur
+
+#### Transitions et interactions
+
+- **Hover effects** : `hover:text-white` pour les liens
+- **Bouton Centre d'aide** : Effet glassmorphism avec `hover:bg-white/90`
+- **Transitions fluides** : `transition-colors` sur tous les éléments interactifs
+
+### Maintenance et évolution
+
+#### Fichiers à modifier pour ajouter des liens
+
+1. **Desktop** : Section `gap-12` dans `SiteFooter`
+2. **Mobile** : Grid `grid-cols-2` dans la section mobile
+3. **Routes** : Créer les pages correspondantes dans `src/app/`
+
+#### Bonnes pratiques
+
+- **Cohérence visuelle** : Maintenir l'alignement avec le header
+- **Performance** : Liens internes uniquement (pas de redirections externes)
+- **SEO** : Structure sémantique et liens internes pour l'indexation

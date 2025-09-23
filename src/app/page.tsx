@@ -1,20 +1,20 @@
 //
 
-import { ArrowDown, ArrowRight, Quote, Users } from "lucide-react";
+import { ArrowDown, ArrowRight, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
 import { BackToTop } from "@/components/back-to-top";
+import CategoriesBrowserServer from "@/components/categories-browser-server";
 import { CursorNudge } from "@/components/cursor-nudge";
 import { HeroSearch } from "@/components/hero-search";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { BackgroundGradient } from "@/components/ui/background-gradient";
-import CategoriesBrowserServer from "@/components/categories-browser-server";
-import { MovingBorderButton } from "@/components/ui/moving-border";
+import { StickySearch } from "@/components/sticky-search";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
-
-import { StickySearch } from "../components/sticky-search";
+import { BackgroundGradient } from "@/components/ui/background-gradient";
+import { MovingBorderButton } from "@/components/ui/moving-border";
 
 export const metadata: Metadata = {
   title: "Ourspace – Trouvez le pro idéal, au bon endroit, au bon moment",
@@ -384,7 +384,21 @@ export default function Home() {
               id="testimonials"
               className="font-caveat text-3xl sm:text-4xl font-bold tracking-tight text-center"
             >
-              Ils nous font confiance
+              <span className="inline-block">
+                Ils nous font confiance
+                <span aria-hidden className="block mx-auto mt-2 w-1/2">
+                  <svg className="w-full h-[4px]" viewBox="0 0 100 4" preserveAspectRatio="none">
+                    <path
+                      d="M0 2 Q 25 0 50 2 T 100 2"
+                      stroke="black"
+                      strokeWidth="4"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </span>
             </h2>
             <div className="mt-8">
               <TestimonialsCarousel
@@ -409,8 +423,7 @@ export default function Home() {
                   {
                     id: "ourspace-2",
                     company: "Ourspace",
-                    quote:
-                      "Devis clair et rapide, très satisfait. Le suivi client est excellent.",
+                    quote: "Devis clair et rapide, très satisfait. Le suivi client est excellent.",
                     authorName: "Karim",
                     authorTitle: "Paris",
                   },
@@ -427,9 +440,8 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        
       </main>
+      <SiteFooter />
     </div>
   );
 }

@@ -77,7 +77,30 @@ const DIRECTIVES_PROD = {
 
 const directives = isDev ? DIRECTIVES_DEV : DIRECTIVES_PROD;
 
+// Middleware personnalisé pour gérer les tokens de récupération (désactivé)
+// function customMiddleware(request: NextRequest) {
+//   const { pathname, searchParams } = request.nextUrl;
+
+//   // Gérer les tokens de récupération de mot de passe
+//   if (pathname === "/reset-password") {
+//     const token = searchParams.get("token");
+//     const type = searchParams.get("type");
+
+//     // Si pas de token ou type incorrect, rediriger vers forgot-password
+//     if (!token || type !== "recovery") {
+//       const url = new URL("/forgot-password", request.url);
+//       url.searchParams.set("error", "Lien invalide ou expiré");
+//       return NextResponse.redirect(url);
+//     }
+//   }
+
+//   // Continuer avec le middleware suivant
+//   return NextResponse.next();
+// }
+
 export default chainMatch(isPageRequest)(
+  // Retiré: customMiddleware de validation de token pour reset-password.
+  // Le flux est désormais géré côté client via ResetRecoveryBridge et via /auth/callback.
   csp({ directives: directives as unknown as CspDirectives, reportOnly: false }),
 );
 

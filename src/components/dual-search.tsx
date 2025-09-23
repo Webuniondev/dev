@@ -3,8 +3,8 @@
 import { MapPin, Search } from "lucide-react";
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
 import { useSecureFetch } from "@/lib/hooks/use-secure-fetch";
+import { cn } from "@/lib/utils";
 
 type DualSearchProps = {
   /** Style du composant : "hero" pour la page d'accueil, "sticky" pour la barre fixe */
@@ -166,7 +166,6 @@ export const DualSearch: React.FC<DualSearchProps> = ({
               }}
               onBlur={() => setTimeout(() => setServiceOpen(false), 120)}
               aria-autocomplete="list"
-              aria-expanded={serviceOpen}
               aria-controls="service-listbox"
               className={cn(
                 "w-full pl-10 pr-4 rounded-md border text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
@@ -291,7 +290,6 @@ export const DualSearch: React.FC<DualSearchProps> = ({
               }}
               onBlur={() => setTimeout(() => setLocationOpen(false), 120)}
               aria-autocomplete="list"
-              aria-expanded={locationOpen}
               aria-controls="location-listbox"
               className={cn(
                 "w-full pl-10 pr-4 rounded-md border text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
@@ -387,7 +385,6 @@ export const DualSearch: React.FC<DualSearchProps> = ({
               }}
               onBlur={() => setTimeout(() => setServiceOpen(false), 120)}
               aria-autocomplete="list"
-              aria-expanded={serviceOpen}
               aria-controls="service-listbox-desktop"
               className={cn(
                 "w-full pl-10 pr-4 rounded-md border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
@@ -512,7 +509,6 @@ export const DualSearch: React.FC<DualSearchProps> = ({
               }}
               onBlur={() => setTimeout(() => setLocationOpen(false), 120)}
               aria-autocomplete="list"
-              aria-expanded={locationOpen}
               aria-controls="location-listbox-desktop"
               className={cn(
                 "w-full pl-10 pr-4 rounded-md border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",

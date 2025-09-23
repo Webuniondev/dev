@@ -31,6 +31,9 @@ export function AuthWelcomeListener() {
       if (event !== "SIGNED_IN" && event !== "INITIAL_SESSION") return;
       if (shownRef.current) return;
 
+      // Ne pas afficher le toast de bienvenue sur les pages de récupération de mot de passe
+      if (window.location.pathname === "/reset-password") return;
+
       let alreadyWelcomed = false;
       try {
         alreadyWelcomed = sessionStorage.getItem("welcomed_user_id") === userId;

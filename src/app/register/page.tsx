@@ -52,7 +52,7 @@ export default function RegisterPage() {
         <BackgroundBeams />
       </div>
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="mx-auto w-full max-w-md lg:max-w-xl xl:max-w-2xl rounded-2xl bg-white/5 p-6 sm:p-8 backdrop-blur-md">
+        <div className="mx-auto w-full max-w-md lg:max-w-xl xl:max-w-2xl rounded-2xl relative isolate overflow-hidden backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-white/8 bg-white/15 border border-white/20 ring-1 ring-inset ring-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.15)] p-6 sm:p-8 before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-gradient-to-br before:from-white/30 before:via-white/10 before:to-transparent before:opacity-40 before:content-[''] after:pointer-events-none after:absolute after:top-0 after:left-0 after:right-0 after:h-0.5 after:bg-gradient-to-r after:from-transparent after:via-white/60 after:to-transparent after:opacity-80 after:content-['']">
           {step !== "success" && (
             <div className="mb-6">
               <Link

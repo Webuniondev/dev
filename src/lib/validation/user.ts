@@ -160,3 +160,32 @@ export const frenchAddressSchema = z.object({
 });
 
 export type FrenchAddressInput = z.infer<typeof frenchAddressSchema>;
+
+// =====================================================
+// Schémas pour la récupération de mot de passe
+// =====================================================
+
+// Demande de réinitialisation de mot de passe
+export const forgotPasswordSchema = z.object({
+  email: z.string().email("Format d'email invalide"),
+});
+
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+
+// Réinitialisation de mot de passe
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Le mot de passe doit contenir au moins 8 caractères")
+      .max(128, "Le mot de passe ne peut pas dépasser 128 caractères"),
+    confirmPassword: z.string(),
+    token: z.string().min(1, "Token requis"),
+    type: z.literal("recovery"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Les mots de passe ne correspondent pas",
+    path: ["confirmPassword"],
+  });
+
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

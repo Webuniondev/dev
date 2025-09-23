@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Briefcase, User } from "lucide-react";
+import { Briefcase, User } from "lucide-react";
 
 interface AccountTypeSelectorProps {
   onSelect: (type: "user" | "pro") => void;
@@ -18,44 +18,40 @@ export function AccountTypeSelector({ onSelect }: AccountTypeSelectorProps) {
         </p>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Compte utilisateur */}
         <button
           onClick={() => onSelect("user")}
-          className="group w-full p-6 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 transition-all duration-200 text-left"
+          className="group w-full h-full p-6 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 transition-all duration-200 text-center cursor-pointer hover:cursor-pointer"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-lg bg-blue-500/20 text-blue-400">
-                <User className="size-6" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-white">Particulier</h3>
-                <p className="text-white/60 text-sm">
-                  Je recherche des professionnels pour mes projets
-                </p>
-              </div>
+          <div className="flex flex-col items-center justify-center h-full space-y-4">
+            <div className="p-4 rounded-xl bg-blue-500/20 text-blue-400">
+              <User className="size-8" />
             </div>
-            <ArrowRight className="size-5 text-white/40 group-hover:text-white/70 transition-colors" />
+            <div>
+              <h3 className="text-xl font-semibold text-white mb-2">Particulier</h3>
+              <p className="text-white/60 text-sm leading-relaxed">
+                Je recherche des professionnels pour mes projets
+              </p>
+            </div>
           </div>
         </button>
 
         {/* Compte professionnel */}
         <button
           onClick={() => onSelect("pro")}
-          className="group w-full p-6 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 transition-all duration-200 text-left"
+          className="group w-full h-full p-6 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 transition-all duration-200 text-center cursor-pointer hover:cursor-pointer"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-lg bg-purple-500/20 text-purple-400">
-                <Briefcase className="size-6" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-white">Professionnel</h3>
-                <p className="text-white/60 text-sm">Je propose mes services et expertise</p>
-              </div>
+          <div className="flex flex-col items-center justify-center h-full space-y-4">
+            <div className="p-4 rounded-xl bg-purple-500/20 text-purple-400">
+              <Briefcase className="size-8" />
             </div>
-            <ArrowRight className="size-5 text-white/40 group-hover:text-white/70 transition-colors" />
+            <div>
+              <h3 className="text-xl font-semibold text-white mb-2">Professionnel</h3>
+              <p className="text-white/60 text-sm leading-relaxed">
+                Je propose mes services et expertise
+              </p>
+            </div>
           </div>
         </button>
       </div>
